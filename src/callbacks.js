@@ -2,224 +2,224 @@ import { jQuery } from "./core.js";
 import { toType } from "./core/toType.js";
 import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 
-// Convert String-formatted options into Object-formatted ones
-function createOptions( options ) {
+// 将字符串格式的选项转换为 Object 格式的选项
+function createOptions(options) {
 	var object = {};
-	jQuery.each( options.match( rnothtmlwhite ) || [], function( _, flag ) {
-		object[ flag ] = true;
-	} );
+	jQuery.each(options.match(rnothtmlwhite) || [], function (_, flag) {
+		object[flag] = true;
+	});
 	return object;
 }
 
 /*
- * Create a callback list using the following parameters:
+ * 使用以下参数创建回调列表：
  *
- *	options: an optional list of space-separated options that will change how
- *			the callback list behaves or a more traditional option object
+ *	options：一个可选的空格分隔选项列表，将更改方式
+ *			回调列表行为或更传统的 Option 对象
  *
- * By default a callback list will act like an event callback list and can be
- * "fired" multiple times.
+ * 默认情况下，回调列表的作用类似于事件回调列表，并且可以
+ * 多次“fired”。
  *
- * Possible options:
+ * 可能的选项：
  *
- *	once:			will ensure the callback list can only be fired once (like a Deferred)
+ *	once：将确保回调列表只能触发一次（如 Deferred）
  *
- *	memory:			will keep track of previous values and will call any callback added
- *					after the list has been fired right away with the latest "memorized"
- *					values (like a Deferred)
+ *	memory：将跟踪以前的值，并将调用添加的任何回调
+ *					在列表被立即触发后，使用最新的 “memorized”
+ *					值（如 Deferred）
  *
- *	unique:			will ensure a callback can only be added once (no duplicate in the list)
+ *	unique：将确保回调只能添加一次（列表中没有重复项）
  *
- *	stopOnFalse:	interrupt callings when a callback returns false
+ *	stopOnFalse： 当回调返回 false 时中断调用
  *
  */
-jQuery.Callbacks = function( options ) {
+jQuery.Callbacks = function (options) {
 
-	// Convert options from String-formatted to Object-formatted if needed
-	// (we check in cache first)
+	// 如果需要，将选项从 String-formated（字符串格式）转换为 Object-formated（对象格式）
+	// （我们首先检查 CACHE）
 	options = typeof options === "string" ?
-		createOptions( options ) :
-		jQuery.extend( {}, options );
+		createOptions(options) :
+		jQuery.extend({}, options);
 
-	var // Flag to know if list is currently firing
+	var // 标记以了解列表当前是否正在触发
 		firing,
 
-		// Last fire value for non-forgettable lists
+		// 不可遗忘列表的 Last fire 值
 		memory,
 
-		// Flag to know if list was already fired
+		// 标记以了解列表是否已触发
 		fired,
 
-		// Flag to prevent firing
+		// 用于防止触发的标志
 		locked,
 
-		// Actual callback list
+		// 实际回调列表
 		list = [],
 
-		// Queue of execution data for repeatable lists
+		// 可重复列表的执行数据队列
 		queue = [],
 
-		// Index of currently firing callback (modified by add/remove as needed)
+		// 当前触发回调的索引（根据需要通过 add/remove 进行修改）
 		firingIndex = -1,
 
-		// Fire callbacks
-		fire = function() {
+		// 触发回调
+		fire = function () {
 
 			// Enforce single-firing
 			locked = locked || options.once;
 
-			// Execute callbacks for all pending executions,
-			// respecting firingIndex overrides and runtime changes
+			// 执行所有待处理执行的回调，
+			// 遵循 firingIndex 覆盖和运行时更改
 			fired = firing = true;
-			for ( ; queue.length; firingIndex = -1 ) {
+			for (; queue.length; firingIndex = -1) {
 				memory = queue.shift();
-				while ( ++firingIndex < list.length ) {
+				while (++firingIndex < list.length) {
 
-					// Run callback and check for early termination
-					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
-						options.stopOnFalse ) {
+					// 运行 callback 并检查是否提前终止
+					if (list[firingIndex].apply(memory[0], memory[1]) === false &&
+						options.stopOnFalse) {
 
-						// Jump to end and forget the data so .add doesn't re-fire
+						// 跳转到末尾并忘记数据，这样 .add 就不会重新触发
 						firingIndex = list.length;
 						memory = false;
 					}
 				}
 			}
 
-			// Forget the data if we're done with it
-			if ( !options.memory ) {
+			// 如果我们用完了数据，就忘记它
+			if (!options.memory) {
 				memory = false;
 			}
 
 			firing = false;
 
-			// Clean up if we're done firing for good
-			if ( locked ) {
+			// 如果我们永远结束了解雇，请清理
+			if (locked) {
 
-				// Keep an empty list if we have data for future add calls
-				if ( memory ) {
+				// 如果我们有数据用于将来的 add 调用，请保留一个空列表
+				if (memory) {
 					list = [];
 
-				// Otherwise, this object is spent
+					// 否则，此对象将花费
 				} else {
 					list = "";
 				}
 			}
 		},
 
-		// Actual Callbacks object
+		// Actual Callbacks 对象
 		self = {
 
-			// Add a callback or a collection of callbacks to the list
-			add: function() {
-				if ( list ) {
+			// 将回调或回调集合添加到列表中
+			add: function () {
+				if (list) {
 
-					// If we have memory from a past run, we should fire after adding
-					if ( memory && !firing ) {
+					// 如果我们有过去运行的内存，我们应该在添加
+					if (memory && !firing) {
 						firingIndex = list.length - 1;
-						queue.push( memory );
+						queue.push(memory);
 					}
 
-					( function add( args ) {
-						jQuery.each( args, function( _, arg ) {
-							if ( typeof arg === "function" ) {
-								if ( !options.unique || !self.has( arg ) ) {
-									list.push( arg );
+					(function add(args) {
+						jQuery.each(args, function (_, arg) {
+							if (typeof arg === "function") {
+								if (!options.unique || !self.has(arg)) {
+									list.push(arg);
 								}
-							} else if ( arg && arg.length && toType( arg ) !== "string" ) {
+							} else if (arg && arg.length && toType(arg) !== "string") {
 
-								// Inspect recursively
-								add( arg );
+								// 递归检查
+								add(arg);
 							}
-						} );
-					} )( arguments );
+						});
+					})(arguments);
 
-					if ( memory && !firing ) {
+					if (memory && !firing) {
 						fire();
 					}
 				}
 				return this;
 			},
 
-			// Remove a callback from the list
-			remove: function() {
-				jQuery.each( arguments, function( _, arg ) {
+			// 从列表中删除回调
+			remove: function () {
+				jQuery.each(arguments, function (_, arg) {
 					var index;
-					while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
-						list.splice( index, 1 );
+					while ((index = jQuery.inArray(arg, list, index)) > -1) {
+						list.splice(index, 1);
 
-						// Handle firing indexes
-						if ( index <= firingIndex ) {
+						// 处理触发索引
+						if (index <= firingIndex) {
 							firingIndex--;
 						}
 					}
-				} );
+				});
 				return this;
 			},
 
-			// Check if a given callback is in the list.
-			// If no argument is given, return whether or not list has callbacks attached.
-			has: function( fn ) {
+			// 检查给定的回调是否在列表中。
+			// 如果未给出参数，则返回 list 是否附加了回调。
+			has: function (fn) {
 				return fn ?
-					jQuery.inArray( fn, list ) > -1 :
+					jQuery.inArray(fn, list) > -1 :
 					list.length > 0;
 			},
 
-			// Remove all callbacks from the list
-			empty: function() {
-				if ( list ) {
+			// 从列表中删除所有回调
+			empty: function () {
+				if (list) {
 					list = [];
 				}
 				return this;
 			},
 
-			// Disable .fire and .add
-			// Abort any current/pending executions
-			// Clear all callbacks and values
-			disable: function() {
+			// 禁用 .fire 和 .add
+			// 中止任何当前/待处理的执行
+			// 清除所有回调和值
+			disable: function () {
 				locked = queue = [];
 				list = memory = "";
 				return this;
 			},
-			disabled: function() {
+			disabled: function () {
 				return !list;
 			},
 
-			// Disable .fire
-			// Also disable .add unless we have memory (since it would have no effect)
-			// Abort any pending executions
-			lock: function() {
+			// 禁用 .fire
+			// 除非我们有内存，否则请禁用 .add（因为它不会产生任何影响）
+			// 中止任何待处理的执行
+			lock: function () {
 				locked = queue = [];
-				if ( !memory && !firing ) {
+				if (!memory && !firing) {
 					list = memory = "";
 				}
 				return this;
 			},
-			locked: function() {
+			locked: function () {
 				return !!locked;
 			},
 
-			// Call all callbacks with the given context and arguments
-			fireWith: function( context, args ) {
-				if ( !locked ) {
+			// 使用给定的上下文和参数调用所有回调
+			fireWith: function (context, args) {
+				if (!locked) {
 					args = args || [];
-					args = [ context, args.slice ? args.slice() : args ];
-					queue.push( args );
-					if ( !firing ) {
+					args = [context, args.slice ? args.slice() : args];
+					queue.push(args);
+					if (!firing) {
 						fire();
 					}
 				}
 				return this;
 			},
 
-			// Call all the callbacks with the given arguments
-			fire: function() {
-				self.fireWith( this, arguments );
+			// 使用给定参数调用所有回调
+			fire: function () {
+				self.fireWith(this, arguments);
 				return this;
 			},
 
-			// To know if the callbacks have already been called at least once
-			fired: function() {
+			// 了解回调是否至少被调用过一次
+			fired: function () {
 				return !!fired;
 			}
 		};

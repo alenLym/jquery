@@ -17,7 +17,7 @@ jQuery.fn.extend( {
 	},
 	undelegate: function( selector, types, fn ) {
 
-		// ( namespace ) or ( selector, types [, fn] )
+		// （ 命名空间 ） 或 （ 选择器， 类型 [， fn] ）
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
@@ -36,7 +36,7 @@ jQuery.each(
 	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
 	function( _i, name ) {
 
-		// Handle event binding
+		// 处理事件绑定
 		jQuery.fn[ name ] = function( data, fn ) {
 			return arguments.length > 0 ?
 				this.on( name, null, data, fn ) :

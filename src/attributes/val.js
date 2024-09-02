@@ -24,7 +24,7 @@ jQuery.fn.extend( {
 
 				ret = elem.value;
 
-				// Handle cases where value is null/undef or number
+				// 处理 value 为 null/undef 或 number 的情况
 				return ret == null ? "" : ret;
 			}
 
@@ -46,7 +46,7 @@ jQuery.fn.extend( {
 				val = value;
 			}
 
-			// Treat null/undefined as ""; convert numbers to string
+			// 将 null/undefined 视为 “”;将数字转换为字符串
 			if ( val == null ) {
 				val = "";
 
@@ -61,7 +61,7 @@ jQuery.fn.extend( {
 
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
-			// If set returns undefined, fall back to normal setting
+			// 如果 set 返回 undefined，则回退到正常设置
 			if ( !hooks || !( "set" in hooks ) || hooks.set( this, val, "value" ) === undefined ) {
 				this.value = val;
 			}
@@ -87,26 +87,26 @@ jQuery.extend( {
 					i = one ? index : 0;
 				}
 
-				// Loop through all the selected options
+				// 循环浏览所有选定的选项
 				for ( ; i < max; i++ ) {
 					option = options[ i ];
 
 					if ( option.selected &&
 
-							// Don't return options that are disabled or in a disabled optgroup
+							// 不返回已禁用或位于已禁用 optgroup 中的选项
 							!option.disabled &&
 							( !option.parentNode.disabled ||
 								!nodeName( option.parentNode, "optgroup" ) ) ) {
 
-						// Get the specific value for the option
+						// 获取选项的特定值
 						value = jQuery( option ).val();
 
-						// We don't need an array for one selects
+						// 我们不需要一个 select 的数组
 						if ( one ) {
 							return value;
 						}
 
-						// Multi-Selects return an array
+						// Multi-Selects 返回一个数组
 						values.push( value );
 					}
 				}
@@ -130,7 +130,7 @@ jQuery.extend( {
 					}
 				}
 
-				// Force browsers to behave consistently when non-matching value is set
+				// 强制浏览器在设置不匹配值时保持一致的行为
 				if ( !optionSet ) {
 					elem.selectedIndex = -1;
 				}
@@ -148,16 +148,16 @@ if ( isIE ) {
 			return val != null ?
 				val :
 
-				// Support: IE <=10 - 11+
-				// option.text throws exceptions (trac-14686, trac-14858)
-				// Strip and collapse whitespace
-				// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+				// 支持： IE <=10 - 11+
+// option.text 引发异常（Trac-14686、Trac-14858）
+// 去除和折叠空格
+// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
 				stripAndCollapse( jQuery.text( elem ) );
 		}
 	};
 }
 
-// Radios and checkboxes getter/setter
+// 单选和复选框 getter/setter
 jQuery.each( [ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {

@@ -1,4 +1,4 @@
-// Initialize a jQuery object
+// 初始化 jQuery 对象
 import { jQuery } from "../core.js";
 import { document } from "../var/document.js";
 import { rsingleTag } from "./var/rsingleTag.js";
@@ -6,13 +6,13 @@ import { isObviousHtml } from "./isObviousHtml.js";
 
 import "../traversing/findFilter.js";
 
-// A central reference to the root jQuery(document)
+// 对根 jQuery（document） 的中心引用
 var rootjQuery,
 
-	// A simple way to check for HTML strings
-	// Prioritize #id over <tag> to avoid XSS via location.hash (trac-9521)
-	// Strict HTML recognition (trac-11290: must start with <)
-	// Shortcut simple #id case for speed
+	// 检查 HTML 字符串的简单方法
+// 优先 #id <tag> 以避免通过 location.hash 进行 XSS （trac-9521）
+// 严格 HTML 识别（trac-11290：必须以 < 开头）
+// 捷径 简单 #id 速度案例
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
 	init = jQuery.fn.init = function( selector, context ) {
@@ -29,43 +29,43 @@ var rootjQuery,
 			this.length = 1;
 			return this;
 
-		// HANDLE: $(function)
-		// Shortcut for document ready
+		// 句柄：$（function）
+// 文档就绪的快捷方式
 		} else if ( typeof selector === "function" ) {
 			return rootjQuery.ready !== undefined ?
 				rootjQuery.ready( selector ) :
 
-				// Execute immediately if ready is not present
+				// 如果 ready 不存在，则立即执行
 				selector( jQuery );
 
 		} else {
 
-			// Handle obvious HTML strings
+			// 处理明显的 HTML 字符串
 			match = selector + "";
 			if ( isObviousHtml( match ) ) {
 
-				// Assume that strings that start and end with <> are HTML and skip
-				// the regex check. This also handles browser-supported HTML wrappers
-				// like TrustedHTML.
+				// 假设以 <> 开头和结尾的字符串是 HTML 和 skip
+// 正则表达式检查。这还会处理浏览器支持的 HTML 包装器
+// 就像 TrustedHTML 一样。
 				match = [ null, selector, null ];
 
-			// Handle HTML strings or selectors
+			// 处理 HTML 字符串或选择器
 			} else if ( typeof selector === "string" ) {
 				match = rquickExpr.exec( selector );
 			} else {
 				return jQuery.makeArray( selector, this );
 			}
 
-			// Match html or make sure no context is specified for #id
-			// Note: match[1] may be a string or a TrustedHTML wrapper
+			// 匹配 html 或确保没有为 #id 指定上下文
+// 注意：match[1] 可以是字符串或 TrustedHTML 包装器
 			if ( match && ( match[ 1 ] || !context ) ) {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[ 1 ] ) {
 					context = context instanceof jQuery ? context[ 0 ] : context;
 
-					// Option to run scripts is true for back-compat
-					// Intentionally let the error be thrown if parseHTML is not present
+					// 运行脚本的选项对于向后兼容为 true
+// 如果 parseHTML 不存在，则故意引发错误
 					jQuery.merge( this, jQuery.parseHTML(
 						match[ 1 ],
 						context && context.nodeType ? context.ownerDocument || context : document,
@@ -76,11 +76,11 @@ var rootjQuery,
 					if ( rsingleTag.test( match[ 1 ] ) && jQuery.isPlainObject( context ) ) {
 						for ( match in context ) {
 
-							// Properties of context are called as methods if possible
+							// 如果可能，将 context 的属性作为方法调用
 							if ( typeof this[ match ] === "function" ) {
 								this[ match ]( context[ match ] );
 
-							// ...and otherwise set as attributes
+							// ...，否则设置为 attributes
 							} else {
 								this.attr( match, context[ match ] );
 							}
@@ -95,7 +95,7 @@ var rootjQuery,
 
 					if ( elem ) {
 
-						// Inject the element directly into the jQuery object
+						// 将元素直接注入 jQuery 对象
 						this[ 0 ] = elem;
 						this.length = 1;
 					}
@@ -106,8 +106,8 @@ var rootjQuery,
 			} else if ( !context || context.jquery ) {
 				return ( context || rootjQuery ).find( selector );
 
-			// HANDLE: $(expr, context)
-			// (which is just equivalent to: $(context).find(expr)
+			// 句柄： $（expr， context）
+// （相当于： $（context）.find（expr）
 			} else {
 				return this.constructor( context ).find( selector );
 			}
@@ -115,8 +115,8 @@ var rootjQuery,
 
 	};
 
-// Give the init function the jQuery prototype for later instantiation
+// 为 init 函数提供 jQuery 原型以供以后实例化
 init.prototype = jQuery.fn;
 
-// Initialize central reference
+// 初始化中心引用
 rootjQuery = jQuery( document );

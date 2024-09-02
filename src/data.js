@@ -4,19 +4,24 @@ import { camelCase } from "./core/camelCase.js";
 import { dataPriv } from "./data/var/dataPriv.js";
 import { dataUser } from "./data/var/dataUser.js";
 
-//	Implementation Summary
+//	实现摘要
 //
-//	1. Enforce API surface and semantic compatibility with 1.9.x branch
-//	2. Improve the module's maintainability by reducing the storage
-//		paths to a single mechanism.
-//	3. Use the same single mechanism to support "private" and "user" data.
-//	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
-//	5. Avoid exposing implementation details on user objects (eg. expando properties)
-//	6. Provide a clear path for implementation upgrade to WeakMap in 2014
+//	1. 强制 API Surface 和语义与 1.9.x 分支兼容
+//	2. 通过减少存储空间来提高模块的可维护性
+//		paths 到单个机制。
+//	3. 使用相同的单一机制来支持 “私有” 和 “用户” 数据。
+//	4. _从不_向用户代码公开“私有”数据（TODO： Drop _data， _removeData）
+//	5. 避免暴露用户对象的实现细节（例如 expando 属性）
+//	6. 为 2014 年升级到 WeakMap 提供清晰的实施路径
 
 var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /[A-Z]/g;
 
+/**
+ * 解析输入数据并返回相应的 JavaScript 数据类型。
+ * @param {string} data - 要解析的数据。
+ * @returns {boolean|number|string|object} 根据其类型解析的数据。
+ */
 function getData( data ) {
 	if ( data === "true" ) {
 		return true;
@@ -30,7 +35,7 @@ function getData( data ) {
 		return null;
 	}
 
-	// Only convert to a number if it doesn't change the string
+	// 仅当不更改字符串时才转换为数字
 	if ( data === +data + "" ) {
 		return +data;
 	}
@@ -42,6 +47,15 @@ function getData( data ) {
 	return data;
 }
 
+/**
+ * 检索或设置给定元素的 data 属性的值。
+ * 如果未提供 data 属性，它将检索 data 属性的值。
+ * 如果提供了 data 属性，则设置 data 属性的值。
+ * @param {Element} elem - 数据属性所在的元素。
+ * @param {string} key - 数据属性的键。
+ * @param {any} data - 要为 data 属性设置的数据。
+ * @returns data 属性的值。
+ */
 function dataAttr( elem, key, data ) {
 	var name;
 
@@ -56,7 +70,7 @@ function dataAttr( elem, key, data ) {
 				data = getData( data );
 			} catch ( e ) {}
 
-			// Make sure we set the data so it isn't changed later
+			// 确保我们设置了数据，以便以后不会更改它
 			dataUser.set( elem, key, data );
 		} else {
 			data = undefined;
@@ -78,8 +92,8 @@ jQuery.extend( {
 		dataUser.remove( elem, name );
 	},
 
-	// TODO: Now that all calls to _data and _removeData have been replaced
-	// with direct calls to dataPriv methods, these can be deprecated.
+	// TODO：现在，对 _data 和 _removeData 的所有调用都已替换
+// 通过直接调用 dataPriv 方法，这些方法可以被弃用。
 	_data: function( elem, name, data ) {
 		return dataPriv.access( elem, name, data );
 	},
@@ -95,7 +109,7 @@ jQuery.fn.extend( {
 			elem = this[ 0 ],
 			attrs = elem && elem.attributes;
 
-		// Gets all values
+		// 获取所有值
 		if ( key === undefined ) {
 			if ( this.length ) {
 				data = dataUser.get( elem );
@@ -104,8 +118,8 @@ jQuery.fn.extend( {
 					i = attrs.length;
 					while ( i-- ) {
 
-						// Support: IE 11+
-						// The attrs elements can be null (trac-14894)
+						// 支持：IE 11+
+// attrs 元素可以为 null （trac-14894）
 						if ( attrs[ i ] ) {
 							name = attrs[ i ].name;
 							if ( name.indexOf( "data-" ) === 0 ) {
@@ -121,7 +135,7 @@ jQuery.fn.extend( {
 			return data;
 		}
 
-		// Sets multiple values
+		// 设置多个值
 		if ( typeof key === "object" ) {
 			return this.each( function() {
 				dataUser.set( this, key );
@@ -131,35 +145,35 @@ jQuery.fn.extend( {
 		return access( this, function( value ) {
 			var data;
 
-			// The calling jQuery object (element matches) is not empty
-			// (and therefore has an element appears at this[ 0 ]) and the
-			// `value` parameter was not undefined. An empty jQuery object
-			// will result in `undefined` for elem = this[ 0 ] which will
-			// throw an exception if an attempt to read a data cache is made.
+			// 调用 jQuery 对象（元素匹配）不为空
+// （因此有一个元素出现在 this[ 0 ] 处），并且
+// 'value' 参数未定义。空 jQuery 对象
+// 将导致 elem = this[ 0 ] 的 'undefined' ，这将
+// 如果尝试读取数据缓存，则引发异常。
 			if ( elem && value === undefined ) {
 
-				// Attempt to get data from the cache
-				// The key will always be camelCased in Data
+				// 尝试从缓存中获取数据
+// 键将始终在 Data 中为 camelCased
 				data = dataUser.get( elem, key );
 				if ( data !== undefined ) {
 					return data;
 				}
 
-				// Attempt to "discover" the data in
-				// HTML5 custom data-* attrs
+				// 尝试 “发现” 中的数据
+// HTML5 自定义 data-* attrs
 				data = dataAttr( elem, key );
 				if ( data !== undefined ) {
 					return data;
 				}
 
-				// We tried really hard, but the data doesn't exist.
+				// 我们真的很努力，但数据不存在。
 				return;
 			}
 
-			// Set the data...
+			// 设置数据...
 			this.each( function() {
 
-				// We always store the camelCased key
+				// 我们始终存储 camelCased 密钥
 				dataUser.set( this, key, value );
 			} );
 		}, null, value, arguments.length > 1, null, true );

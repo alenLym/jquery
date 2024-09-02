@@ -3,13 +3,13 @@ import { attributes } from "./attributes.js";
 
 export var pseudos = ":(" + identifier + ")(?:\\((" +
 
-	// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
-	// 1. quoted (capture 3; capture 4 or capture 5)
+	// 要减少 preFilter 中需要 tokenize 的 selector 的数量，prefers参数：
+// 1. 引用（捕获 3;捕获 4 或捕获 5）
 	"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
 
-	// 2. simple (capture 6)
+	// 2. 简单 （Capture 6）
 	"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
 
-	// 3. anything else (capture 2)
+	// 3. 其他任何东西 （Capture 2）
 	".*" +
 	")\\)|)";

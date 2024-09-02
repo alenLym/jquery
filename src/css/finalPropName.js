@@ -4,10 +4,10 @@ var cssPrefixes = [ "Webkit", "Moz", "ms" ],
 	emptyStyle = document.createElement( "div" ).style,
 	vendorProps = {};
 
-// Return a vendor-prefixed property or undefined
+// 返回 vendor-prefixed property 或 undefined
 function vendorPropName( name ) {
 
-	// Check for vendor prefixed names
+	// 检查供应商前缀名称
 	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
 		i = cssPrefixes.length;
 
@@ -19,7 +19,7 @@ function vendorPropName( name ) {
 	}
 }
 
-// Return a potentially-mapped vendor prefixed property
+// 返回可能映射的供应商前缀属性
 export function finalPropName( name ) {
 	var final = vendorProps[ name ];
 

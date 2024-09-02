@@ -60,27 +60,27 @@ Tween.propHooks = {
 		get: function( tween ) {
 			var result;
 
-			// Use a property on the element directly when it is not a DOM element,
-			// or when there is no matching style property that exists.
+			// 当元素不是 DOM 元素时，直接在元素上使用属性，
+// 或者当不存在匹配的 style 属性时。
 			if ( tween.elem.nodeType !== 1 ||
 				tween.elem[ tween.prop ] != null && tween.elem.style[ tween.prop ] == null ) {
 				return tween.elem[ tween.prop ];
 			}
 
-			// Passing an empty string as a 3rd parameter to .css will automatically
-			// attempt a parseFloat and fallback to a string if the parse fails.
-			// Simple values such as "10px" are parsed to Float;
-			// complex values such as "rotate(1rad)" are returned as-is.
+			// 将空字符串作为第 3 个参数传递给 .css 将自动
+// 尝试 parseFloat 并在解析失败时回退到字符串。
+// 简单值（如 “10px” ）被解析为 Float;
+// 复杂值（如 “rotate（1rad）”） 按原样返回。
 			result = jQuery.css( tween.elem, tween.prop, "" );
 
-			// Empty strings, null, undefined and "auto" are converted to 0.
+			// 空字符串、null、undefined 和 “auto” 将转换为 0。
 			return !result || result === "auto" ? 0 : result;
 		},
 		set: function( tween ) {
 
-			// Use step hook for back compat.
-			// Use cssHook if its there.
-			// Use .style if available and use plain properties where available.
+			// 使用 step hook 进行 back compat。
+// 如果有，请使用 cssHook。
+// 如果可用，请使用 .style，并在可用时使用 plain 属性。
 			if ( jQuery.fx.step[ tween.prop ] ) {
 				jQuery.fx.step[ tween.prop ]( tween );
 			} else if ( tween.elem.nodeType === 1 && (
@@ -106,5 +106,5 @@ jQuery.easing = {
 
 jQuery.fx = Tween.prototype.init;
 
-// Back compat <1.8 extension point
+// 后兼容 <1.8 扩展点
 jQuery.fx.step = {};

@@ -8,63 +8,63 @@ import "../manipulation.js";
 import "../selector.js";
 
 /**
- * Load a url into a page
+ * 将 URL 加载到页面中
  */
-jQuery.fn.load = function( url, params, callback ) {
+jQuery.fn.load = function (url, params, callback) {
 	var selector, type, response,
 		self = this,
-		off = url.indexOf( " " );
+		off = url.indexOf(" ");
 
-	if ( off > -1 ) {
-		selector = stripAndCollapse( url.slice( off ) );
-		url = url.slice( 0, off );
+	if (off > -1) {
+		selector = stripAndCollapse(url.slice(off));
+		url = url.slice(0, off);
 	}
 
-	// If it's a function
-	if ( typeof params === "function" ) {
+	// 如果它是一个函数
+	if (typeof params === "function") {
 
-		// We assume that it's the callback
+		// 我们假设这是回调
 		callback = params;
 		params = undefined;
 
-	// Otherwise, build a param string
-	} else if ( params && typeof params === "object" ) {
+		// 否则，构建一个 param 字符串
+	} else if (params && typeof params === "object") {
 		type = "POST";
 	}
 
-	// If we have elements to modify, make the request
-	if ( self.length > 0 ) {
-		jQuery.ajax( {
+	// 如果我们有要修改的元素，请提出请求
+	if (self.length > 0) {
+		jQuery.ajax({
 			url: url,
 
-			// If "type" variable is undefined, then "GET" method will be used.
-			// Make value of this field explicit since
-			// user can override it through ajaxSetup method
+			// 如果 “type” 变量未定义，则将使用 “GET” 方法。
+			// 使该字段的值显式，因为
+			// 用户可以通过 ajaxSetup 方法覆盖它
 			type: type || "GET",
 			dataType: "html",
 			data: params
-		} ).done( function( responseText ) {
+		}).done(function (responseText) {
 
-			// Save response for use in complete callback
+			// 保存响应以用于完整回调
 			response = arguments;
 
-			self.html( selector ?
+			self.html(selector ?
 
-				// If a selector was specified, locate the right elements in a dummy div
-				// Exclude scripts to avoid IE 'Permission Denied' errors
-				jQuery( "<div>" ).append( jQuery.parseHTML( responseText ) ).find( selector ) :
+				// 如果指定了选择器，请在虚拟 div 中找到正确的元素
+				// 排除脚本以避免 IE 出现“权限被拒绝”错误
+				jQuery("<div>").append(jQuery.parseHTML(responseText)).find(selector) :
 
-				// Otherwise use the full result
-				responseText );
+				// 否则使用完整结果
+				responseText);
 
-		// If the request succeeds, this function gets "data", "status", "jqXHR"
-		// but they are ignored because response was set above.
-		// If it fails, this function gets "jqXHR", "status", "error"
-		} ).always( callback && function( jqXHR, status ) {
-			self.each( function() {
-				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
-			} );
-		} );
+			// 如果请求成功，此函数将获取 “data”、“status”、“jqXHR”
+			// 但是它们被忽略了，因为上面设置了 response。
+			// 如果失败，此函数将获取 “jqXHR”、“status”、“error”
+		}).always(callback && function (jqXHR, status) {
+			self.each(function () {
+				callback.apply(this, response || [jqXHR.responseText, status, jqXHR]);
+			});
+		});
 	}
 
 	return this;

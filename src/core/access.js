@@ -1,21 +1,21 @@
 import { jQuery } from "../core.js";
 import { toType } from "../core/toType.js";
 
-// Multifunctional method to get and set values of a collection
-// The value/s can optionally be executed if it's a function
+// 用于获取和设置集合值的多功能方法
+// 如果 value/s 是一个函数，则可以选择执行 value/s
 export function access( elems, fn, key, value, chainable, emptyGet, raw ) {
 	var i = 0,
 		len = elems.length,
 		bulk = key == null;
 
-	// Sets many values
+	// 设置许多值
 	if ( toType( key ) === "object" ) {
 		chainable = true;
 		for ( i in key ) {
 			access( elems, fn, i, key[ i ], true, emptyGet, raw );
 		}
 
-	// Sets one value
+	// 设置一个值
 	} else if ( value !== undefined ) {
 		chainable = true;
 
@@ -25,12 +25,12 @@ export function access( elems, fn, key, value, chainable, emptyGet, raw ) {
 
 		if ( bulk ) {
 
-			// Bulk operations run against the entire set
+			// 批量操作针对整个集运行
 			if ( raw ) {
 				fn.call( elems, value );
 				fn = null;
 
-			// ...except when executing function values
+			// ...执行函数值时除外
 			} else {
 				bulk = fn;
 				fn = function( elem, _key, value ) {

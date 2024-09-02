@@ -292,7 +292,7 @@ jQuery.extend({
 			// promise.fail = list.add
 			promise[tuple[1]] = list.add;
 
-			// Handle state
+			// 处理状态
 			if (stateString) {
 				list.add(
 					function () {
@@ -345,7 +345,7 @@ jQuery.extend({
 			func.call(deferred, deferred);
 		}
 
-		// All done!
+		// 全部完成！
 		return deferred;
 	},
 

@@ -4,7 +4,7 @@ import { rneedsContext } from "./var/rneedsContext.js";
 
 import "../selector.js";
 
-// Implement the identical functionality for filter and not
+// 为 filter 和 not 实现相同的功能
 function winnow( elements, qualifier, not ) {
 	if ( typeof qualifier === "function" ) {
 		return jQuery.grep( elements, function( elem, i ) {
@@ -12,21 +12,21 @@ function winnow( elements, qualifier, not ) {
 		} );
 	}
 
-	// Single element
+	// 单元件
 	if ( qualifier.nodeType ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( elem === qualifier ) !== not;
 		} );
 	}
 
-	// Arraylike of elements (jQuery, arguments, Array)
+	// 元素的数组类（jQuery、参数、数组）
 	if ( typeof qualifier !== "string" ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( indexOf.call( qualifier, elem ) > -1 ) !== not;
 		} );
 	}
 
-	// Filtered directly for both simple and complex selectors
+	// 直接过滤简单和复杂选择器
 	return jQuery.filter( qualifier, elements, not );
 }
 
@@ -80,8 +80,8 @@ jQuery.fn.extend( {
 		return !!winnow(
 			this,
 
-			// If this is a positional/relative selector, check membership in the returned set
-			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			// 如果这是位置/相对选择器，请检查返回集中的成员身份
+// 所以 $（“p：first”）.is（“p：last”） 不会为包含两个 “p” 的文档返回 true。
 			typeof selector === "string" && rneedsContext.test( selector ) ?
 				jQuery( selector ) :
 				selector || [],

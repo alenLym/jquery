@@ -2,10 +2,10 @@ import { jQuery } from "../core.js";
 
 var
 
-	// Map over jQuery in case of overwrite
+	// 在覆盖的情况下映射
 	_jQuery = window.jQuery,
 
-	// Map over the $ in case of overwrite
+	// 在覆盖的情况下映射 $
 	_$ = window.$;
 
 jQuery.noConflict = function( deep ) {
@@ -20,9 +20,9 @@ jQuery.noConflict = function( deep ) {
 	return jQuery;
 };
 
-// Expose jQuery and $ identifiers, even in AMD
-// (trac-7102#comment:10, gh-557)
-// and CommonJS for browser emulators (trac-13566)
+// 公开 jQuery 和 $ 标识符，即使在 AMD 中也是如此
+// （TRAC-7102#评论：10， GH-557）
+// 和用于浏览器模拟器的 CommonJS （trac-13566）
 if ( typeof noGlobal === "undefined" ) {
 	window.jQuery = window.$ = jQuery;
 }

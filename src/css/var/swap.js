@@ -1,9 +1,9 @@
-// A method for quickly swapping in/out CSS properties to get correct calculations.
+// 一种快速换入/换出 CSS 属性以获得正确计算的方法。
 export function swap( elem, options, callback ) {
 	var ret, name,
 		old = {};
 
-	// Remember the old values, and insert the new ones
+	// 记住旧值，并插入新值
 	for ( name in options ) {
 		old[ name ] = elem.style[ name ];
 		elem.style[ name ] = options[ name ];
@@ -11,7 +11,7 @@ export function swap( elem, options, callback ) {
 
 	ret = callback.call( elem );
 
-	// Revert the old values
+	// 恢复旧值
 	for ( name in options ) {
 		elem.style[ name ] = old[ name ];
 	}

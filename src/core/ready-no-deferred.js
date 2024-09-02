@@ -7,8 +7,8 @@ var readyCallbacks = [],
 	},
 	executeReady = function( fn ) {
 
-		// Prevent errors from freezing future callback execution (gh-1823)
-		// Not backwards-compatible as this does not execute sync
+		// 防止错误冻结将来的回调执行 （gh-1823）
+// 不向后兼容，因为这不会执行同步
 		window.setTimeout( function() {
 			fn.call( document, jQuery );
 		} );
@@ -21,24 +21,24 @@ jQuery.fn.ready = function( fn ) {
 
 jQuery.extend( {
 
-	// Is the DOM ready to be used? Set to true once it occurs.
+	// DOM 准备好了吗？一旦发生，就设置为 true。
 	isReady: false,
 
-	// A counter to track how many items to wait for before
-	// the ready event fires. See trac-6781
+	// 一个计数器，用于跟踪之前要等待的项目数
+// 将触发 ready 事件。请参阅 trac-6781
 	readyWait: 1,
 
 	ready: function( wait ) {
 
-		// Abort if there are pending holds or we're already ready
+		// 如果有待处理的保留或我们已经准备好了，则中止
 		if ( wait === true ? --jQuery.readyWait : jQuery.isReady ) {
 			return;
 		}
 
-		// Remember that the DOM is ready
+		// 请记住，DOM 已准备就绪
 		jQuery.isReady = true;
 
-		// If a normal DOM Ready event fired, decrement, and wait if need be
+		// 如果触发了正常的 DOM Ready 事件，则递减并在需要时等待
 		if ( wait !== true && --jQuery.readyWait > 0 ) {
 			return;
 		}
@@ -58,11 +58,11 @@ jQuery.extend( {
 	}
 } );
 
-// Make jQuery.ready Promise consumable (gh-1778)
+// 使 jQuery.ready Promise 可消费 （gh-1778）
 jQuery.ready.then = jQuery.fn.ready;
 
 /**
- * The ready event handler and self cleanup method
+ * ready 事件处理程序和自我清理方法
  */
 function completed() {
 	document.removeEventListener( "DOMContentLoaded", completed );
@@ -70,18 +70,18 @@ function completed() {
 	jQuery.ready();
 }
 
-// Catch cases where $(document).ready() is called
-// after the browser event has already occurred.
+// 捕获调用 $（document）.ready（） 的情况
+// 在 browser 事件已发生之后。
 if ( document.readyState !== "loading" ) {
 
-	// Handle it asynchronously to allow scripts the opportunity to delay ready
+	// 异步处理它，让脚本有机会延迟就绪
 	window.setTimeout( jQuery.ready );
 
 } else {
 
-	// Use the handy event callback
+	// 使用方便的事件回调
 	document.addEventListener( "DOMContentLoaded", completed );
 
-	// A fallback to window.onload, that will always work
+	// 回退到 window.onload，将始终有效
 	window.addEventListener( "load", completed );
 }

@@ -43,7 +43,7 @@ jQuery.fn.extend( {
 						}
 					}
 
-					// Only assign if different to avoid unneeded rendering.
+					// 仅在不同时分配以避免不必要的渲染。
 					finalValue = stripAndCollapse( cur );
 					if ( curValue !== finalValue ) {
 						this.setAttribute( "class", finalValue );
@@ -74,20 +74,20 @@ jQuery.fn.extend( {
 			return this.each( function() {
 				curValue = getClass( this );
 
-				// This expression is here for better compressibility (see addClass)
+				// 此表达式用于更好的可压缩性（请参阅 addClass）
 				cur = this.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
 
 				if ( cur ) {
 					for ( i = 0; i < classNames.length; i++ ) {
 						className = classNames[ i ];
 
-						// Remove *all* instances
+						// 删除 *所有* 实例
 						while ( cur.indexOf( " " + className + " " ) > -1 ) {
 							cur = cur.replace( " " + className + " ", " " );
 						}
 					}
 
-					// Only assign if different to avoid unneeded rendering.
+					// 仅在不同时分配以避免不必要的渲染。
 					finalValue = stripAndCollapse( cur );
 					if ( curValue !== finalValue ) {
 						this.setAttribute( "class", finalValue );
@@ -120,13 +120,13 @@ jQuery.fn.extend( {
 		if ( classNames.length ) {
 			return this.each( function() {
 
-				// Toggle individual class names
+				// 切换单个类名
 				self = jQuery( this );
 
 				for ( i = 0; i < classNames.length; i++ ) {
 					className = classNames[ i ];
 
-					// Check each className given, space separated list
+					// 检查给定的每个 className，以空格分隔的列表
 					if ( self.hasClass( className ) ) {
 						self.removeClass( className );
 					} else {

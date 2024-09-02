@@ -23,23 +23,23 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 
 		if ( elem || elem === 0 ) {
 
-			// Add nodes directly
+			// 直接添加节点
 			if ( toType( elem ) === "object" && ( elem.nodeType || isArrayLike( elem ) ) ) {
 				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
-			// Convert non-html into a text node
+			// 将非 html 转换为文本节点
 			} else if ( !rhtml.test( elem ) ) {
 				nodes.push( context.createTextNode( elem ) );
 
-			// Convert html into DOM nodes
+			// 将 html 转换为 DOM 节点
 			} else {
 				tmp = tmp || fragment.appendChild( context.createElement( "div" ) );
 
-				// Deserialize a standard representation
+				// 反序列化标准表示
 				tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
 				wrap = wrapMap[ tag ] || arr;
 
-				// Create wrappers & descend into them.
+				// 创建包装并深入其中。
 				j = wrap.length;
 				while ( --j > -1 ) {
 					tmp = tmp.appendChild( context.createElement( wrap[ j ] ) );
@@ -49,22 +49,22 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 
 				jQuery.merge( nodes, tmp.childNodes );
 
-				// Remember the top-level container
+				// 记住顶级容器
 				tmp = fragment.firstChild;
 
-				// Ensure the created nodes are orphaned (trac-12392)
+				// 确保创建的节点是孤立的 （trac-12392）
 				tmp.textContent = "";
 			}
 		}
 	}
 
-	// Remove wrapper from fragment
+	// 从 fragment 中删除包装器
 	fragment.textContent = "";
 
 	i = 0;
 	while ( ( elem = nodes[ i++ ] ) ) {
 
-		// Skip elements already in the context collection (trac-4087)
+		// 跳过上下文集合中已有的元素 （trac-4087）
 		if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
 			if ( ignored ) {
 				ignored.push( elem );
@@ -74,15 +74,15 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 
 		attached = isAttached( elem );
 
-		// Append to fragment
+		// 附加到片段
 		tmp = getAll( fragment.appendChild( elem ), "script" );
 
-		// Preserve script evaluation history
+		// 保留脚本评估历史记录
 		if ( attached ) {
 			setGlobalEval( tmp );
 		}
 
-		// Capture executables
+		// 捕获可执行文件
 		if ( scripts ) {
 			j = 0;
 			while ( ( elem = tmp[ j++ ] ) ) {

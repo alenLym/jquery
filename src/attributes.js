@@ -5,5 +5,5 @@ import "./attributes/prop.js";
 import "./attributes/classes.js";
 import "./attributes/val.js";
 
-// Return jQuery for attributes-only inclusion
+// 返回 jQuery 以仅包含属性
 export { jQuery, jQuery as $ };

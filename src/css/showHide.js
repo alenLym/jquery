@@ -33,7 +33,7 @@ export function showHide( elements, show ) {
 		index = 0,
 		length = elements.length;
 
-	// Determine new display value for elements that need to change
+	// 确定需要更改的元素的新显示值
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
 		if ( !elem.style ) {
@@ -43,9 +43,9 @@ export function showHide( elements, show ) {
 		display = elem.style.display;
 		if ( show ) {
 
-			// Since we force visibility upon cascade-hidden elements, an immediate (and slow)
-			// check is required in this first loop unless we have a nonempty display value (either
-			// inline or about-to-be-restored)
+			// 由于我们在级联隐藏元素上强制可见性，因此立即（且缓慢）的
+// check 在第一个循环中是必需的，除非我们有一个非空的 display 值（或者
+// 内联或即将恢复）
 			if ( display === "none" ) {
 				values[ index ] = dataPriv.get( elem, "display" ) || null;
 				if ( !values[ index ] ) {
@@ -59,13 +59,13 @@ export function showHide( elements, show ) {
 			if ( display !== "none" ) {
 				values[ index ] = "none";
 
-				// Remember what we're overwriting
+				// 记住我们要覆盖的内容
 				dataPriv.set( elem, "display", display );
 			}
 		}
 	}
 
-	// Set the display of the elements in a second loop to avoid constant reflow
+	// 设置第二个循环中元素的显示以避免持续重排
 	for ( index = 0; index < length; index++ ) {
 		if ( values[ index ] != null ) {
 			elements[ index ].style.display = values[ index ];

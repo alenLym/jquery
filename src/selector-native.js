@@ -1,24 +1,24 @@
 /*
- * Optional limited selector module for custom builds.
+ * 用于自定义构建的可选有限选择器模块。
  *
- * Note that this DOES NOT SUPPORT many documented jQuery
- * features in exchange for its smaller size:
+ * 请注意，这不支持许多记录在 JQUERY
+ * 功能换取其更小的尺寸：
  *
- * * Attribute not equal selector (!=)
- * * Positional selectors (:first; :eq(n); :odd; etc.)
- * * Type selectors (:input; :checkbox; :button; etc.)
- * * State-based selectors (:animated; :visible; :hidden; etc.)
- * * :has(selector) in browsers without native support
- * * :not(complex selector) in IE
- * * custom selectors via jQuery extensions
- * * Reliable functionality on XML fragments
- * * Matching against non-elements
- * * Reliable sorting of disconnected nodes
- * * querySelectorAll bug fixes (e.g., unreliable :focus on WebKit)
+ * * 属性不等于选择器 （！=）
+ * * 位置选择器 （：first; ：eq（n）; ：odd; 等）
+ * * 类型选择器 （：input; ：checkbox; ：button; 等）
+ * * 基于状态的选择器 （：animated; ：visible; ：hidden; 等）
+ * * ：has（selector） 在没有本机支持的浏览器中
+ * * IE 中的 ：not（复杂选择器）
+ * * 通过 jQuery 扩展自定义选择器
+ * * XML 片段上的可靠功能
+ * * 与非元素匹配
+ * * 对断开连接的节点进行可靠排序
+ * * querySelector所有错误修复（例如，不可靠：关注 WebKit）
  *
- * If any of these are unacceptable tradeoffs, either use the full
- * selector engine or  customize this stub for the project's specific
- * needs.
+ * 如果其中任何一个是不可接受的权衡，请使用完整的
+ * selector engine 或为项目的特定
+ * 需要。
  */
 
 import { jQuery } from "./core.js";
@@ -35,40 +35,40 @@ import { preFilter } from "./selector/preFilter.js";
 import { tokenize } from "./selector/tokenize.js";
 import { toSelector } from "./selector/toSelector.js";
 
-// The following utils are attached directly to the jQuery object.
+// 以下 util 直接附加到 jQuery 对象。
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
-var matchExpr = jQuery.extend( {
-	needsContext: new RegExp( "^" + whitespace + "*[>+~]" )
-}, filterMatchExpr );
+var matchExpr = jQuery.extend({
+	needsContext: new RegExp("^" + whitespace + "*[>+~]")
+}, filterMatchExpr);
 
-jQuery.extend( {
-	find: function( selector, context, results, seed ) {
+jQuery.extend({
+	find: function (selector, context, results, seed) {
 		var elem, nid, groups, newSelector,
 			newContext = context && context.ownerDocument,
 
-			// nodeType defaults to 9, since context defaults to document
+			// nodeType 默认为 9，因为 context 默认为 document
 			nodeType = context ? context.nodeType : 9,
 			i = 0;
 
 		results = results || [];
 		context = context || document;
 
-		// Same basic safeguard as in the full selector module
-		if ( !selector || typeof selector !== "string" ) {
+		// 与完整选择器模块中的基本保护措施相同
+		if (!selector || typeof selector !== "string") {
 			return results;
 		}
 
-		// Early return if context is not an element, document or document fragment
-		if ( nodeType !== 1 && nodeType !== 9 && nodeType !== 11 ) {
+		// 如果 context 不是元素、文档或文档片段，则提前返回
+		if (nodeType !== 1 && nodeType !== 9 && nodeType !== 11) {
 			return [];
 		}
 
-		if ( seed ) {
-			while ( ( elem = seed[ i++ ] ) ) {
-				if ( jQuery.find.matchesSelector( elem, selector ) ) {
-					results.push( elem );
+		if (seed) {
+			while ((elem = seed[i++])) {
+				if (jQuery.find.matchesSelector(elem, selector)) {
+					results.push(elem);
 				}
 			}
 		} else {
@@ -76,48 +76,48 @@ jQuery.extend( {
 			newSelector = selector;
 			newContext = context;
 
-			// qSA considers elements outside a scoping root when evaluating child or
-			// descendant combinators, which is not what we want.
-			// In such cases, we work around the behavior by prefixing every selector in the
-			// list with an ID selector referencing the scope context.
-			// The technique has to be used as well when a leading combinator is used
-			// as such selectors are not recognized by querySelectorAll.
-			// Thanks to Andrew Dupont for this technique.
-			if ( nodeType === 1 &&
-				( rdescend.test( selector ) || rleadingCombinator.test( selector ) ) ) {
+			// qSA 在评估 child 或
+			// descendant 组合器，这不是我们想要的。
+			// 在这种情况下，我们通过在
+			// list 中引用 scope 上下文的 ID 选择器。
+			// 当使用领先的运算器时，也必须使用该技术
+			// 因此，querySelectorAll 无法识别 selector 。
+			// 感谢 Andrew Dupont 的这项技术。
+			if (nodeType === 1 &&
+				(rdescend.test(selector) || rleadingCombinator.test(selector))) {
 
-				// Expand context for sibling selectors
-				newContext = rsibling.test( selector ) &&
-					testContext( context.parentNode ) ||
+				// 展开同级选择器的上下文
+				newContext = rsibling.test(selector) &&
+					testContext(context.parentNode) ||
 					context;
 
-				// Outside of IE, if we're not changing the context we can
-				// use :scope instead of an ID.
-				if ( newContext !== context || isIE ) {
+				// 在 IE 之外，如果我们不改变上下文，我们可以
+				// 使用 ：scope 而不是 ID。
+				if (newContext !== context || isIE) {
 
-					// Capture the context ID, setting it first if necessary
-					if ( ( nid = context.getAttribute( "id" ) ) ) {
-						nid = jQuery.escapeSelector( nid );
+					// 捕获上下文 ID，必要时先设置
+					if ((nid = context.getAttribute("id"))) {
+						nid = jQuery.escapeSelector(nid);
 					} else {
-						context.setAttribute( "id", ( nid = jQuery.expando ) );
+						context.setAttribute("id", (nid = jQuery.expando));
 					}
 				}
 
-				// Prefix every selector in the list
-				groups = tokenize( selector );
+				// 为列表中的每个选择器添加前缀
+				groups = tokenize(selector);
 				i = groups.length;
-				while ( i-- ) {
-					groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
-						toSelector( groups[ i ] );
+				while (i--) {
+					groups[i] = (nid ? "#" + nid : ":scope") + " " +
+						toSelector(groups[i]);
 				}
-				newSelector = groups.join( "," );
+				newSelector = groups.join(",");
 			}
 
 			try {
-				jQuery.merge( results, newContext.querySelectorAll( newSelector ) );
+				jQuery.merge(results, newContext.querySelectorAll(newSelector));
 			} finally {
-				if ( nid === jQuery.expando ) {
-					context.removeAttribute( "id" );
+				if (nid === jQuery.expando) {
+					context.removeAttribute("id");
 				}
 			}
 		}
@@ -126,22 +126,22 @@ jQuery.extend( {
 	},
 	expr: {
 
-		// Can be adjusted by the user
+		// 可由用户调整
 		cacheLength: 50,
 
 		match: matchExpr,
 		preFilter: preFilter
 	}
-} );
+});
 
-jQuery.extend( jQuery.find, {
-	matches: function( expr, elements ) {
-		return jQuery.find( expr, null, null, elements );
+jQuery.extend(jQuery.find, {
+	matches: function (expr, elements) {
+		return jQuery.find(expr, null, null, elements);
 	},
-	matchesSelector: function( elem, expr ) {
-		return matches.call( elem, expr );
+	matchesSelector: function (elem, expr) {
+		return matches.call(elem, expr);
 	},
 	tokenize: tokenize
-} );
+});
 
 export { jQuery, jQuery as $ };

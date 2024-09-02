@@ -25,9 +25,9 @@ var ralphaStart = /^[a-z]/,
 
 export function isAutoPx( prop ) {
 
-	// The first test is used to ensure that:
-	// 1. The prop starts with a lowercase letter (as we uppercase it for the second regex).
-	// 2. The prop is not empty.
+	// 第一个测试用于确保：
+// 1. prop 以小写字母开头（因为我们在第二个正则表达式中将其大写）。
+// 2. prop 不为空。
 	return ralphaStart.test( prop ) &&
 		rautoPx.test( prop[ 0 ].toUpperCase() + prop.slice( 1 ) );
 }

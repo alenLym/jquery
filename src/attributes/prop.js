@@ -22,14 +22,14 @@ jQuery.extend( {
 		var ret, hooks,
 			nType = elem.nodeType;
 
-		// Don't get/set properties on text, comment and attribute nodes
+		// 不要获取/设置文本、注释和属性节点上的属性
 		if ( nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
 
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 
-			// Fix name and attach hooks
+			// 修复名称并附加钩子
 			name = jQuery.propFix[ name ] || name;
 			hooks = jQuery.propHooks[ name ];
 		}
@@ -54,10 +54,10 @@ jQuery.extend( {
 		tabIndex: {
 			get: function( elem ) {
 
-				// Support: IE <=9 - 11+
-				// elem.tabIndex doesn't always return the
-				// correct value when it hasn't been explicitly set
-				// Use proper attribute retrieval (trac-12072)
+				// 支持：IE <=9 - 11+
+// elem.tabIndex 并不总是返回
+// 正确的值（如果尚未显式设置）
+// 使用正确的属性检索 （trac-12072）
 				var tabindex = elem.getAttribute( "tabindex" );
 
 				if ( tabindex ) {
@@ -67,8 +67,8 @@ jQuery.extend( {
 				if (
 					rfocusable.test( elem.nodeName ) ||
 
-					// href-less anchor's `tabIndex` property value is `0` and
-					// the `tabindex` attribute value: `null`. We want `-1`.
+					// href-less anchor 的 'tabIndex' 属性值为 '0' 且
+// 'tabindex' 属性值： 'null'。我们想要 '-1'。
 					rclickable.test( elem.nodeName ) && elem.href
 				) {
 					return 0;
@@ -85,11 +85,11 @@ jQuery.extend( {
 	}
 } );
 
-// Support: IE <=11+
-// Accessing the selectedIndex property forces the browser to respect
-// setting selected on the option. The getter ensures a default option
-// is selected when in an optgroup. ESLint rule "no-unused-expressions"
-// is disabled for this code since it considers such accessions noop.
+// 支持：IE <=11+
+// 访问 selectedIndex 属性会强制浏览器遵循
+// 在选项上选择了设置。getter 确保默认选项
+// 在 OptGroup 中时被选中。ESLint 规则 “no-unused-expressions”
+// 对于此代码被禁用，因为它认为此类 Accessions Noop.
 if ( isIE ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {

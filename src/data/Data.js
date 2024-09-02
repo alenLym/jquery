@@ -13,26 +13,26 @@ Data.prototype = {
 
 	cache: function( owner ) {
 
-		// Check if the owner object already has a cache
+		// 检查所有者对象是否已经有缓存
 		var value = owner[ this.expando ];
 
-		// If not, create one
+		// 如果没有，请创建一个
 		if ( !value ) {
 			value = Object.create( null );
 
-			// We can accept data for non-element nodes in modern browsers,
-			// but we should not, see trac-8335.
-			// Always return an empty object.
+			// 我们可以在现代浏览器中接受非元素节点的数据，
+// 但我们不应该，参见 TRAC-8335。
+// 始终返回空对象。
 			if ( acceptData( owner ) ) {
 
-				// If it is a node unlikely to be stringify-ed or looped over
-				// use plain assignment
+				// 如果它是一个不太可能被字符串化或循环的节点
+// 使用普通赋值
 				if ( owner.nodeType ) {
 					owner[ this.expando ] = value;
 
-				// Otherwise secure it in a non-enumerable property
-				// configurable must be true to allow the property to be
-				// deleted when data is removed
+				// 否则，将其保存在不可枚举的属性中
+// configurable 必须为 true 才能允许该属性为
+// 删除数据时已删除
 				} else {
 					Object.defineProperty( owner, this.expando, {
 						value: value,
@@ -48,15 +48,15 @@ Data.prototype = {
 		var prop,
 			cache = this.cache( owner );
 
-		// Handle: [ owner, key, value ] args
-		// Always use camelCase key (gh-2257)
+		// 句柄： [ owner， key， value ] args
+// 始终使用 camelCase 键 （gh-2257）
 		if ( typeof data === "string" ) {
 			cache[ camelCase( data ) ] = value;
 
-		// Handle: [ owner, { properties } ] args
+		// 句柄： [ owner， { properties } ] args
 		} else {
 
-			// Copy the properties one-by-one to the cache object
+			// 将属性逐个复制到缓存对象
 			for ( prop in data ) {
 				cache[ camelCase( prop ) ] = data[ prop ];
 			}
@@ -67,38 +67,38 @@ Data.prototype = {
 		return key === undefined ?
 			this.cache( owner ) :
 
-			// Always use camelCase key (gh-2257)
+			// 始终使用 camelCase 键 （gh-2257）
 			owner[ this.expando ] && owner[ this.expando ][ camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
 
-		// In cases where either:
-		//
-		//   1. No key was specified
-		//   2. A string key was specified, but no value provided
-		//
-		// Take the "read" path and allow the get method to determine
-		// which value to return, respectively either:
-		//
-		//   1. The entire cache object
-		//   2. The data stored at the key
-		//
+		// 在以下情况下：
+//
+//   1. 未指定键
+//   2. 指定了字符串键，但未提供任何值
+//
+// 采用 “read” 路径，并允许 get 方法确定
+// 返回哪个值，分别是：
+//
+//   1. 整个缓存对象
+//   2. 存储在 key 上的数据
+//
 		if ( key === undefined ||
 				( ( key && typeof key === "string" ) && value === undefined ) ) {
 
 			return this.get( owner, key );
 		}
 
-		// When the key is not a string, or both a key and value
-		// are specified, set or extend (existing objects) with either:
-		//
-		//   1. An object of properties
-		//   2. A key and value
-		//
+		// 当 key 不是字符串，或者同时是 key 和 value 时
+// 使用以下任一方式指定、设置或扩展 （现有对象）：
+//
+//   1. 属性对象
+//   2. 键和值
+//
 		this.set( owner, key, value );
 
-		// Since the "set" path can have two possible entry points
-		// return the expected data based on which path was taken[*]
+		// 由于 “set” 路径可以有两个可能的入口点
+// 根据所采用的路径返回预期数据[*]
 		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
@@ -111,17 +111,17 @@ Data.prototype = {
 
 		if ( key !== undefined ) {
 
-			// Support array or space separated string of keys
+			// 支持数组或空格分隔的键字符串
 			if ( Array.isArray( key ) ) {
 
-				// If key is an array of keys...
-				// We always set camelCase keys, so remove that.
+				// 如果 key 是一组 key...
+// 我们总是设置 camelCase 键，所以请删除它。
 				key = key.map( camelCase );
 			} else {
 				key = camelCase( key );
 
-				// If a key with the spaces exists, use it.
-				// Otherwise, create an array by matching non-whitespace
+				// 如果存在带空格的键，请使用它。
+// 否则，通过匹配非空格来创建数组
 				key = key in cache ?
 					[ key ] :
 					( key.match( rnothtmlwhite ) || [] );
@@ -134,13 +134,13 @@ Data.prototype = {
 			}
 		}
 
-		// Remove the expando if there's no more data
+		// 如果没有更多数据，请删除 expando
 		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
 
-			// Support: Chrome <=35 - 45+
-			// Webkit & Blink performance suffers when deleting properties
-			// from DOM nodes, so set to undefined instead
-			// https://bugs.chromium.org/p/chromium/issues/detail?id=378607 (bug restricted)
+			// 支持：Chrome <=35 - 45+
+// 删除属性时，Webkit和Blink性能会受到影响
+// 从 DOM 节点，因此改为 undefined
+// https://bugs.chromium.org/p/chromium/issues/detail?id=378607 （错误受限）
 			if ( owner.nodeType ) {
 				owner[ this.expando ] = undefined;
 			} else {

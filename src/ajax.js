@@ -22,152 +22,152 @@ var
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 
-	/* Prefilters
-	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
-	 * 2) These are called:
-	 *    - BEFORE asking for a transport
-	 *    - AFTER param serialization (s.data is a string if s.processData is true)
-	 * 3) key is the dataType
-	 * 4) the catchall symbol "*" can be used
-	 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
+	/* 预过滤器
+	 * 1） 它们对于引入自定义 dataTypes 很有用（有关示例，请参阅 ajax/jsonp.js）
+	 * 2） 这些被称为：
+	 *    - 在要求交通之前
+	 *    - AFTER 参数序列化（如果 s.processData 为 true，则 s.data 为字符串）
+	 * 3） key 是 dataType
+	 * 4） 可以使用 catchall 符号“*”
+	 * 5） 执行将从 transport dataType 开始，然后根据需要继续执行到 “*”
 	 */
 	prefilters = {},
 
-	/* Transports bindings
-	 * 1) key is the dataType
-	 * 2) the catchall symbol "*" can be used
-	 * 3) selection will start with transport dataType and THEN go to "*" if needed
+	/* 传输绑定
+	 * 1） key 是 dataType
+	 * 2） 可以使用 catchall 符号 “*”
+	 * 3） 选择将从 transport dataType 开始，然后根据需要转到 “*”
 	 */
 	transports = {},
 
-	// Avoid comment-prolog char sequence (trac-10098); must appease lint and evade compression
-	allTypes = "*/".concat( "*" ),
+	// 避免 comment-prolog char 序列 （trac-10098）;必须安抚 lint 并逃避压缩
+	allTypes = "*/".concat("*"),
 
-	// Anchor tag for parsing the document origin
-	originAnchor = document.createElement( "a" );
+	// 用于解析文档来源的锚点标签
+	originAnchor = document.createElement("a");
 
 originAnchor.href = location.href;
 
-// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
-function addToPrefiltersOrTransports( structure ) {
+// jQuery.ajaxPrefilter 和 jQuery.ajaxTransport 的基本“构造函数”
+function addToPrefiltersOrTransports(structure) {
 
-	// dataTypeExpression is optional and defaults to "*"
-	return function( dataTypeExpression, func ) {
+	// dataTypeExpression 是可选的，默认为 “*”
+	return function (dataTypeExpression, func) {
 
-		if ( typeof dataTypeExpression !== "string" ) {
+		if (typeof dataTypeExpression !== "string") {
 			func = dataTypeExpression;
 			dataTypeExpression = "*";
 		}
 
 		var dataType,
 			i = 0,
-			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
+			dataTypes = dataTypeExpression.toLowerCase().match(rnothtmlwhite) || [];
 
-		if ( typeof func === "function" ) {
+		if (typeof func === "function") {
 
-			// For each dataType in the dataTypeExpression
-			while ( ( dataType = dataTypes[ i++ ] ) ) {
+			// 对于 dataTypeExpression 中的每个 dataType
+			while ((dataType = dataTypes[i++])) {
 
-				// Prepend if requested
-				if ( dataType[ 0 ] === "+" ) {
-					dataType = dataType.slice( 1 ) || "*";
-					( structure[ dataType ] = structure[ dataType ] || [] ).unshift( func );
+				// 如果要求，请在 Preend
+				if (dataType[0] === "+") {
+					dataType = dataType.slice(1) || "*";
+					(structure[dataType] = structure[dataType] || []).unshift(func);
 
-				// Otherwise append
+					// Otherwise append
 				} else {
-					( structure[ dataType ] = structure[ dataType ] || [] ).push( func );
+					(structure[dataType] = structure[dataType] || []).push(func);
 				}
 			}
 		}
 	};
 }
 
-// Base inspection function for prefilters and transports
-function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR ) {
+// 用于预过滤器和运输的底部检查功能
+function inspectPrefiltersOrTransports(structure, options, originalOptions, jqXHR) {
 
 	var inspected = {},
-		seekingTransport = ( structure === transports );
+		seekingTransport = (structure === transports);
 
-	function inspect( dataType ) {
+	function inspect(dataType) {
 		var selected;
-		inspected[ dataType ] = true;
-		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) {
-			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
-			if ( typeof dataTypeOrTransport === "string" &&
-				!seekingTransport && !inspected[ dataTypeOrTransport ] ) {
+		inspected[dataType] = true;
+		jQuery.each(structure[dataType] || [], function (_, prefilterOrFactory) {
+			var dataTypeOrTransport = prefilterOrFactory(options, originalOptions, jqXHR);
+			if (typeof dataTypeOrTransport === "string" &&
+				!seekingTransport && !inspected[dataTypeOrTransport]) {
 
-				options.dataTypes.unshift( dataTypeOrTransport );
-				inspect( dataTypeOrTransport );
+				options.dataTypes.unshift(dataTypeOrTransport);
+				inspect(dataTypeOrTransport);
 				return false;
-			} else if ( seekingTransport ) {
-				return !( selected = dataTypeOrTransport );
+			} else if (seekingTransport) {
+				return !(selected = dataTypeOrTransport);
 			}
-		} );
+		});
 		return selected;
 	}
 
-	return inspect( options.dataTypes[ 0 ] ) || !inspected[ "*" ] && inspect( "*" );
+	return inspect(options.dataTypes[0]) || !inspected["*"] && inspect("*");
 }
 
-// A special extend for ajax options
-// that takes "flat" options (not to be deep extended)
-// Fixes trac-9887
-function ajaxExtend( target, src ) {
+// ajax 选项的特殊扩展
+// 这需要 “flat” 选项（不要深入扩展）
+// 修复 trac-9887
+function ajaxExtend(target, src) {
 	var key, deep,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
 
-	for ( key in src ) {
-		if ( src[ key ] !== undefined ) {
-			( flatOptions[ key ] ? target : ( deep || ( deep = {} ) ) )[ key ] = src[ key ];
+	for (key in src) {
+		if (src[key] !== undefined) {
+			(flatOptions[key] ? target : (deep || (deep = {})))[key] = src[key];
 		}
 	}
-	if ( deep ) {
-		jQuery.extend( true, target, deep );
+	if (deep) {
+		jQuery.extend(true, target, deep);
 	}
 
 	return target;
 }
 
-/* Handles responses to an ajax request:
- * - finds the right dataType (mediates between content-type and expected dataType)
- * - returns the corresponding response
+/* 处理对 ajax 请求的响应：
+ * - 找到正确的 dataType （在 content-type 和 expected dataType 之间进行调解）
+ * - 返回相应的响应
  */
-function ajaxHandleResponses( s, jqXHR, responses ) {
+function ajaxHandleResponses(s, jqXHR, responses) {
 
 	var ct, type, finalDataType, firstDataType,
 		contents = s.contents,
 		dataTypes = s.dataTypes;
 
-	// Remove auto dataType and get content-type in the process
-	while ( dataTypes[ 0 ] === "*" ) {
+	// 在进程中删除 auto dataType 并获取 content-type
+	while (dataTypes[0] === "*") {
 		dataTypes.shift();
-		if ( ct === undefined ) {
-			ct = s.mimeType || jqXHR.getResponseHeader( "Content-Type" );
+		if (ct === undefined) {
+			ct = s.mimeType || jqXHR.getResponseHeader("Content-Type");
 		}
 	}
 
-	// Check if we're dealing with a known content-type
-	if ( ct ) {
-		for ( type in contents ) {
-			if ( contents[ type ] && contents[ type ].test( ct ) ) {
-				dataTypes.unshift( type );
+	// 检查我们是否正在处理已知的 content-type
+	if (ct) {
+		for (type in contents) {
+			if (contents[type] && contents[type].test(ct)) {
+				dataTypes.unshift(type);
 				break;
 			}
 		}
 	}
 
-	// Check to see if we have a response for the expected dataType
-	if ( dataTypes[ 0 ] in responses ) {
-		finalDataType = dataTypes[ 0 ];
+	// 检查是否有针对预期 dataType 的响应
+	if (dataTypes[0] in responses) {
+		finalDataType = dataTypes[0];
 	} else {
 
 		// Try convertible dataTypes
-		for ( type in responses ) {
-			if ( !dataTypes[ 0 ] || s.converters[ type + " " + dataTypes[ 0 ] ] ) {
+		for (type in responses) {
+			if (!dataTypes[0] || s.converters[type + " " + dataTypes[0]]) {
 				finalDataType = type;
 				break;
 			}
-			if ( !firstDataType ) {
+			if (!firstDataType) {
 				firstDataType = type;
 			}
 		}
@@ -176,21 +176,21 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 		finalDataType = finalDataType || firstDataType;
 	}
 
-	// If we found a dataType
-	// We add the dataType to the list if needed
-	// and return the corresponding response
-	if ( finalDataType ) {
-		if ( finalDataType !== dataTypes[ 0 ] ) {
-			dataTypes.unshift( finalDataType );
+	// 如果我们找到 dataType
+	// 如果需要，我们将 dataType 添加到列表中
+	// 并返回相应的响应
+	if (finalDataType) {
+		if (finalDataType !== dataTypes[0]) {
+			dataTypes.unshift(finalDataType);
 		}
-		return responses[ finalDataType ];
+		return responses[finalDataType];
 	}
 }
 
-/* Chain conversions given the request and the original response
- * Also sets the responseXXX fields on the jqXHR instance
+/* 给定请求和原始响应的链式转换
+ * 此外，在 jqXHR 实例上设置 responseXXX 字段
  */
-function ajaxConvert( s, response, jqXHR, isSuccess ) {
+function ajaxConvert(s, response, jqXHR, isSuccess) {
 	var conv2, current, conv, tmp, prev,
 		converters = {},
 
@@ -198,63 +198,63 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 		dataTypes = s.dataTypes.slice();
 
 	// Create converters map with lowercased keys
-	if ( dataTypes[ 1 ] ) {
-		for ( conv in s.converters ) {
-			converters[ conv.toLowerCase() ] = s.converters[ conv ];
+	if (dataTypes[1]) {
+		for (conv in s.converters) {
+			converters[conv.toLowerCase()] = s.converters[conv];
 		}
 	}
 
 	current = dataTypes.shift();
 
 	// Convert to each sequential dataType
-	while ( current ) {
+	while (current) {
 
-		if ( s.responseFields[ current ] ) {
-			jqXHR[ s.responseFields[ current ] ] = response;
+		if (s.responseFields[current]) {
+			jqXHR[s.responseFields[current]] = response;
 		}
 
 		// Apply the dataFilter if provided
-		if ( !prev && isSuccess && s.dataFilter ) {
-			response = s.dataFilter( response, s.dataType );
+		if (!prev && isSuccess && s.dataFilter) {
+			response = s.dataFilter(response, s.dataType);
 		}
 
 		prev = current;
 		current = dataTypes.shift();
 
-		if ( current ) {
+		if (current) {
 
 			// There's only work to do if current dataType is non-auto
-			if ( current === "*" ) {
+			if (current === "*") {
 
 				current = prev;
 
-			// Convert response if prev dataType is non-auto and differs from current
-			} else if ( prev !== "*" && prev !== current ) {
+				// Convert response if prev dataType is non-auto and differs from current
+			} else if (prev !== "*" && prev !== current) {
 
 				// Seek a direct converter
-				conv = converters[ prev + " " + current ] || converters[ "* " + current ];
+				conv = converters[prev + " " + current] || converters["* " + current];
 
 				// If none found, seek a pair
-				if ( !conv ) {
-					for ( conv2 in converters ) {
+				if (!conv) {
+					for (conv2 in converters) {
 
 						// If conv2 outputs current
-						tmp = conv2.split( " " );
-						if ( tmp[ 1 ] === current ) {
+						tmp = conv2.split(" ");
+						if (tmp[1] === current) {
 
 							// If prev can be converted to accepted input
-							conv = converters[ prev + " " + tmp[ 0 ] ] ||
-								converters[ "* " + tmp[ 0 ] ];
-							if ( conv ) {
+							conv = converters[prev + " " + tmp[0]] ||
+								converters["* " + tmp[0]];
+							if (conv) {
 
 								// Condense equivalence converters
-								if ( conv === true ) {
-									conv = converters[ conv2 ];
+								if (conv === true) {
+									conv = converters[conv2];
 
-								// Otherwise, insert the intermediate dataType
-								} else if ( converters[ conv2 ] !== true ) {
-									current = tmp[ 0 ];
-									dataTypes.unshift( tmp[ 1 ] );
+									// Otherwise, insert the intermediate dataType
+								} else if (converters[conv2] !== true) {
+									current = tmp[0];
+									dataTypes.unshift(tmp[1]);
 								}
 								break;
 							}
@@ -262,16 +262,16 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 					}
 				}
 
-				// Apply converter (if not an equivalence)
-				if ( conv !== true ) {
+				// Apply converter （如果不是等效的）
+				if (conv !== true) {
 
 					// Unless errors are allowed to bubble, catch and return them
-					if ( conv && s.throws ) {
-						response = conv( response );
+					if (conv && s.throws) {
+						response = conv(response);
 					} else {
 						try {
-							response = conv( response );
-						} catch ( e ) {
+							response = conv(response);
+						} catch (e) {
 							return {
 								state: "parsererror",
 								error: conv ? e : "No conversion from " + prev + " to " + current
@@ -286,19 +286,19 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 	return { state: "success", data: response };
 }
 
-jQuery.extend( {
+jQuery.extend({
 
-	// Counter for holding the number of active queries
+	// 用于保存活动查询数的 Counter
 	active: 0,
 
-	// Last-Modified header cache for next request
+	// 下一个请求的 Last-Modified 标头缓存
 	lastModified: {},
 	etag: {},
 
 	ajaxSettings: {
 		url: location.href,
 		type: "GET",
-		isLocal: rlocalProtocol.test( location.protocol ),
+		isLocal: rlocalProtocol.test(location.protocol),
 		global: true,
 		processData: true,
 		async: true,
@@ -336,450 +336,452 @@ jQuery.extend( {
 			json: "responseJSON"
 		},
 
-		// Data converters
-		// Keys separate source (or catchall "*") and destination types with a single space
+		// 数据转换器
+		// 键用单个空格分隔源（或捕获全部 “*”）和目标类型
 		converters: {
 
-			// Convert anything to text
+			// 将任何内容转换为文本
 			"* text": String,
 
 			// Text to html (true = no transformation)
 			"text html": true,
 
-			// Evaluate text as a json expression
+			// 将文本作为 json 表达式计算
 			"text json": JSON.parse,
 
-			// Parse text as xml
+			// 将文本解析为 xml
 			"text xml": jQuery.parseXML
 		},
 
-		// For options that shouldn't be deep extended:
-		// you can add your own custom options here if
-		// and when you create one that shouldn't be
-		// deep extended (see ajaxExtend)
+		// 对于不应深度扩展的选项：
+		// 如果满足以下条件，您可以在此处添加自己的自定义选项
+		// 而当你创建一个不应该
+		// deep extend（请参阅 ajaxExtend）
 		flatOptions: {
 			url: true,
 			context: true
 		}
 	},
 
-	// Creates a full fledged settings object into target
-	// with both ajaxSettings and settings fields.
-	// If target is omitted, writes into ajaxSettings.
-	ajaxSetup: function( target, settings ) {
+	// 在 target 中创建完整的 settings 对象
+	// 同时具有 ajaxSettings 和 settings 字段。
+	// 如果省略 target，则写入 ajaxSettings。
+	ajaxSetup: function (target, settings) {
 		return settings ?
 
-			// Building a settings object
-			ajaxExtend( ajaxExtend( target, jQuery.ajaxSettings ), settings ) :
+			// 构建 settings 对象
+			ajaxExtend(ajaxExtend(target, jQuery.ajaxSettings), settings) :
 
-			// Extending ajaxSettings
-			ajaxExtend( jQuery.ajaxSettings, target );
+			// 扩展 ajaxSettings
+			ajaxExtend(jQuery.ajaxSettings, target);
 	},
 
-	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
-	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
-	// Main method
-	ajax: function( url, options ) {
+	ajaxPrefilter: addToPrefiltersOrTransports(prefilters),
 
-		// If url is an object, simulate pre-1.5 signature
-		if ( typeof url === "object" ) {
+	ajaxTransport: addToPrefiltersOrTransports(transports),
+
+	// 主要方法
+	ajax: function (url, options) {
+
+		// 如果 url 是一个对象，则模拟 1.5 之前的签名
+		if (typeof url === "object") {
 			options = url;
 			url = undefined;
 		}
 
-		// Force options to be an object
+		// 强制选项为对象
 		options = options || {};
 
 		var transport,
 
-			// URL without anti-cache param
+			// 没有 anti-cache 参数的 URL
 			cacheURL,
 
-			// Response headers
+			// 响应标头
 			responseHeadersString,
 			responseHeaders,
 
-			// timeout handle
+			// 超时句柄
 			timeoutTimer,
 
 			// Url cleanup var
 			urlAnchor,
 
-			// Request state (becomes false upon send and true upon completion)
+			// 请求状态（发送时变为 false，完成时变为 true）
 			completed,
 
-			// To know if global events are to be dispatched
+			// 了解是否要调度全局事件
 			fireGlobals,
 
-			// Loop variable
+			// Loop 变量
 			i,
 
-			// uncached part of the url
+			// URL 的未缓存部分
 			uncached,
 
-			// Create the final options object
-			s = jQuery.ajaxSetup( {}, options ),
+			// 创建最终选项对象
+			s = jQuery.ajaxSetup({}, options),
 
-			// Callbacks context
+			// 回调上下文
 			callbackContext = s.context || s,
 
-			// Context for global events is callbackContext if it is a DOM node or jQuery collection
+			// 如果全局事件是 DOM 节点或 jQuery 集合，则全局事件的上下文为 callbackContext
 			globalEventContext = s.context &&
-				( callbackContext.nodeType || callbackContext.jquery ) ?
-				jQuery( callbackContext ) :
+				(callbackContext.nodeType || callbackContext.jquery) ?
+				jQuery(callbackContext) :
 				jQuery.event,
 
-			// Deferreds
+			// 延期
 			deferred = jQuery.Deferred(),
-			completeDeferred = jQuery.Callbacks( "once memory" ),
+			completeDeferred = jQuery.Callbacks("once memory"),
 
-			// Status-dependent callbacks
+			// 状态相关回调
 			statusCode = s.statusCode || {},
 
-			// Headers (they are sent all at once)
+			// 标头（一次发送所有标头）
 			requestHeaders = {},
 			requestHeadersNames = {},
 
-			// Default abort message
+			// 默认中止消息
 			strAbort = "canceled",
 
-			// Fake xhr
+			// 假 xhr
 			jqXHR = {
 				readyState: 0,
 
-				// Builds headers hashtable if needed
-				getResponseHeader: function( key ) {
+				// 根据需要构建标头哈希表
+				getResponseHeader: function (key) {
 					var match;
-					if ( completed ) {
-						if ( !responseHeaders ) {
+					if (completed) {
+						if (!responseHeaders) {
 							responseHeaders = {};
-							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
+							while ((match = rheaders.exec(responseHeadersString))) {
 
-								// Support: IE 11+
-								// `getResponseHeader( key )` in IE doesn't combine all header
-								// values for the provided key into a single result with values
-								// joined by commas as other browsers do. Instead, it returns
-								// them on separate lines.
-								responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
-									( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
-										.concat( match[ 2 ] );
+								// 支持：IE 11+
+// IE 中的 'getResponseHeader（ key ）' 不合并所有标头
+// values 转换为具有 values 的单个结果
+// 与其他浏览器一样用逗号连接。相反，它会返回
+// 它们位于不同的行上。
+								responseHeaders[match[1].toLowerCase() + " "] =
+									(responseHeaders[match[1].toLowerCase() + " "] || [])
+										.concat(match[2]);
 							}
 						}
-						match = responseHeaders[ key.toLowerCase() + " " ];
+						match = responseHeaders[key.toLowerCase() + " "];
 					}
-					return match == null ? null : match.join( ", " );
+					return match == null ? null : match.join(", ");
 				},
 
-				// Raw string
-				getAllResponseHeaders: function() {
+				// 原始字符串
+				getAllResponseHeaders: function () {
 					return completed ? responseHeadersString : null;
 				},
 
-				// Caches the header
-				setRequestHeader: function( name, value ) {
-					if ( completed == null ) {
-						name = requestHeadersNames[ name.toLowerCase() ] =
-							requestHeadersNames[ name.toLowerCase() ] || name;
-						requestHeaders[ name ] = value;
+				// 缓存标头
+				setRequestHeader: function (name, value) {
+					if (completed == null) {
+						name = requestHeadersNames[name.toLowerCase()] =
+							requestHeadersNames[name.toLowerCase()] || name;
+						requestHeaders[name] = value;
 					}
 					return this;
 				},
 
-				// Overrides response content-type header
-				overrideMimeType: function( type ) {
-					if ( completed == null ) {
+				// 覆盖响应 content-type 标头
+				overrideMimeType: function (type) {
+					if (completed == null) {
 						s.mimeType = type;
 					}
 					return this;
 				},
 
-				// Status-dependent callbacks
-				statusCode: function( map ) {
+				// 状态相关回调
+				statusCode: function (map) {
 					var code;
-					if ( map ) {
-						if ( completed ) {
+					if (map) {
+						if (completed) {
 
-							// Execute the appropriate callbacks
-							jqXHR.always( map[ jqXHR.status ] );
+							// 执行适当的回调
+							jqXHR.always(map[jqXHR.status]);
 						} else {
 
-							// Lazy-add the new callbacks in a way that preserves old ones
-							for ( code in map ) {
-								statusCode[ code ] = [ statusCode[ code ], map[ code ] ];
+							// 以保留旧回调的方式延迟添加新回调
+							for (code in map) {
+								statusCode[code] = [statusCode[code], map[code]];
 							}
 						}
 					}
 					return this;
 				},
 
-				// Cancel the request
-				abort: function( statusText ) {
+				// 取消请求
+				abort: function (statusText) {
 					var finalText = statusText || strAbort;
-					if ( transport ) {
-						transport.abort( finalText );
+					if (transport) {
+						transport.abort(finalText);
 					}
-					done( 0, finalText );
+					done(0, finalText);
 					return this;
 				}
 			};
 
-		// Attach deferreds
-		deferred.promise( jqXHR );
+		// 附加延迟
+		deferred.promise(jqXHR);
 
-		// Add protocol if not provided (prefilters might expect it)
-		// Handle falsy url in the settings object (trac-10093: consistency with old signature)
-		// We also use the url parameter if available
-		s.url = ( ( url || s.url || location.href ) + "" )
-			.replace( rprotocol, location.protocol + "//" );
+		// 如果未提供，请添加协议（预过滤器可能期望它）
+// 处理 settings 对象中的虚假 url（trac-10093：与旧签名一致）
+// 如果可用，我们还使用 url 参数
+		s.url = ((url || s.url || location.href) + "")
+			.replace(rprotocol, location.protocol + "//");
 
-		// Alias method option to type as per ticket trac-12004
+		// 根据票证 trac-12004 键入的别名方法选项
 		s.type = options.method || options.type || s.method || s.type;
 
-		// Extract dataTypes list
-		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnothtmlwhite ) || [ "" ];
+		// 提取数据类型列表
+		s.dataTypes = (s.dataType || "*").toLowerCase().match(rnothtmlwhite) || [""];
 
-		// A cross-domain request is in order when the origin doesn't match the current origin.
-		if ( s.crossDomain == null ) {
-			urlAnchor = document.createElement( "a" );
+		// 当源与当前源不匹配时，将按顺序发出跨域请求。
+		if (s.crossDomain == null) {
+			urlAnchor = document.createElement("a");
 
-			// Support: IE <=8 - 11+
-			// IE throws exception on accessing the href property if url is malformed,
-			// e.g. http://example.com:80x/
+			// 支持： IE <=8 - 11+
+// 如果 url 格式错误，IE 在访问 href 属性时会引发异常，
+// 例如 http：//example.com：80x/
 			try {
 				urlAnchor.href = s.url;
 
-				// Support: IE <=8 - 11+
-				// Anchor's host property isn't correctly set when s.url is relative
+				// 支持： IE <=8 - 11+
+// 当 s.url 是 relative 时，锚点的 host 属性未正确设置
 				urlAnchor.href = urlAnchor.href;
 				s.crossDomain = originAnchor.protocol + "//" + originAnchor.host !==
 					urlAnchor.protocol + "//" + urlAnchor.host;
-			} catch ( e ) {
+			} catch (e) {
 
-				// If there is an error parsing the URL, assume it is crossDomain,
-				// it can be rejected by the transport if it is invalid
+				// 如果解析 URL 时出错，则假设它是 crossDomain，
+// 如果它无效，则可以被 transport 拒绝
 				s.crossDomain = true;
 			}
 		}
 
-		// Apply prefilters
-		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
+		// 应用预过滤器
+		inspectPrefiltersOrTransports(prefilters, s, options, jqXHR);
 
-		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data !== "string" ) {
-			s.data = jQuery.param( s.data, s.traditional );
+		// 如果还不是字符串，则转换数据
+		if (s.data && s.processData && typeof s.data !== "string") {
+			s.data = jQuery.param(s.data, s.traditional);
 		}
 
-		// If request was aborted inside a prefilter, stop there
-		if ( completed ) {
+		// 如果请求在预过滤器内中止，则在此处停止
+		if (completed) {
 			return jqXHR;
 		}
 
-		// We can fire global events as of now if asked to
-		// Don't fire events if jQuery.event is undefined in an ESM-usage scenario (trac-15118)
+		// 如果需要，我们现在可以触发全球事件
+// 如果在 ESM 使用场景中未定义 jQuery.event，则不触发事件 （trac-15118）
 		fireGlobals = jQuery.event && s.global;
 
-		// Watch for a new set of requests
-		if ( fireGlobals && jQuery.active++ === 0 ) {
-			jQuery.event.trigger( "ajaxStart" );
+		// 关注一组新的请求
+		if (fireGlobals && jQuery.active++ === 0) {
+			jQuery.event.trigger("ajaxStart");
 		}
 
-		// Uppercase the type
+		// 将类型大写
 		s.type = s.type.toUpperCase();
 
-		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
+		// 确定请求是否包含内容
+		s.hasContent = !rnoContent.test(s.type);
 
-		// Save the URL in case we're toying with the If-Modified-Since
-		// and/or If-None-Match header later on
-		// Remove hash to simplify url manipulation
-		cacheURL = s.url.replace( rhash, "" );
+		// 保存 URL，以防我们玩弄 If-Modified-Since
+// 和/或 If-None-Match 标头
+// 删除哈希以简化 url 操作
+		cacheURL = s.url.replace(rhash, "");
 
-		// More options handling for requests with no content
-		if ( !s.hasContent ) {
+		// 为没有内容的请求处理更多选项
+		if (!s.hasContent) {
 
-			// Remember the hash so we can put it back
-			uncached = s.url.slice( cacheURL.length );
+			// 记住哈希值，以便我们可以将其放回原处
+			uncached = s.url.slice(cacheURL.length);
 
-			// If data is available and should be processed, append data to url
-			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
-				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
+			// 如果数据可用且应进行处理，请将数据附加到 url
+			if (s.data && (s.processData || typeof s.data === "string")) {
+				cacheURL += (rquery.test(cacheURL) ? "&" : "?") + s.data;
 
-				// trac-9682: remove data so that it's not used in an eventual retry
+				// TRAC-9682：移除数据，使其在最终重试中不被使用
 				delete s.data;
 			}
 
-			// Add or update anti-cache param if needed
-			if ( s.cache === false ) {
-				cacheURL = cacheURL.replace( rantiCache, "$1" );
-				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" +
-					( nonce.guid++ ) + uncached;
+			// 如果需要，添加或更新 anti-cache param
+			if (s.cache === false) {
+				cacheURL = cacheURL.replace(rantiCache, "$1");
+				uncached = (rquery.test(cacheURL) ? "&" : "?") + "_=" +
+					(nonce.guid++) + uncached;
 			}
 
-			// Put hash and anti-cache on the URL that will be requested (gh-1732)
+			// 在将请求的 URL 上放置哈希和防缓存 （gh-1732）
 			s.url = cacheURL + uncached;
 
-		// Change '%20' to '+' if this is encoded form body content (gh-2658)
-		} else if ( s.data && s.processData &&
-			( s.contentType || "" ).indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
-			s.data = s.data.replace( r20, "+" );
+			// 如果这是以正文内容形式编码的，请将“%20”更改为“+” （gh-2658）
+		} else if (s.data && s.processData &&
+			(s.contentType || "").indexOf("application/x-www-form-urlencoded") === 0) {
+			s.data = s.data.replace(r20, "+");
 		}
 
-		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-		if ( s.ifModified ) {
-			if ( jQuery.lastModified[ cacheURL ] ) {
-				jqXHR.setRequestHeader( "If-Modified-Since", jQuery.lastModified[ cacheURL ] );
+		// 如果处于 ifModified 模式，请设置 If-Modified-Since 和/或 If-None-Match 标头。
+		if (s.ifModified) {
+			if (jQuery.lastModified[cacheURL]) {
+				jqXHR.setRequestHeader("If-Modified-Since", jQuery.lastModified[cacheURL]);
 			}
-			if ( jQuery.etag[ cacheURL ] ) {
-				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ cacheURL ] );
+			if (jQuery.etag[cacheURL]) {
+				jqXHR.setRequestHeader("If-None-Match", jQuery.etag[cacheURL]);
 			}
 		}
 
-		// Set the correct header, if data is being sent
-		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
-			jqXHR.setRequestHeader( "Content-Type", s.contentType );
+		// 如果正在发送数据，请设置正确的标头
+		if (s.data && s.hasContent && s.contentType !== false || options.contentType) {
+			jqXHR.setRequestHeader("Content-Type", s.contentType);
 		}
 
-		// Set the Accepts header for the server, depending on the dataType
+		// 根据 dataType 为服务器设置 Accepts 标头
 		jqXHR.setRequestHeader(
 			"Accept",
-			s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
-				s.accepts[ s.dataTypes[ 0 ] ] +
-					( s.dataTypes[ 0 ] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
-				s.accepts[ "*" ]
+			s.dataTypes[0] && s.accepts[s.dataTypes[0]] ?
+				s.accepts[s.dataTypes[0]] +
+				(s.dataTypes[0] !== "*" ? ", " + allTypes + "; q=0.01" : "") :
+				s.accepts["*"]
 		);
 
-		// Check for headers option
-		for ( i in s.headers ) {
-			jqXHR.setRequestHeader( i, s.headers[ i ] );
+		// Check for headers 选项
+		for (i in s.headers) {
+			jqXHR.setRequestHeader(i, s.headers[i]);
 		}
 
-		// Allow custom headers/mimetypes and early abort
-		if ( s.beforeSend &&
-			( s.beforeSend.call( callbackContext, jqXHR, s ) === false || completed ) ) {
+		// 允许自定义标头/mimetype 和提前中止
+		if (s.beforeSend &&
+			(s.beforeSend.call(callbackContext, jqXHR, s) === false || completed)) {
 
-			// Abort if not done already and return
+			// 如果尚未完成，则中止并返回
 			return jqXHR.abort();
 		}
 
-		// Aborting is no longer a cancellation
+		// 中止不再是取消
 		strAbort = "abort";
 
-		// Install callbacks on deferreds
-		completeDeferred.add( s.complete );
-		jqXHR.done( s.success );
-		jqXHR.fail( s.error );
+		// 在 deferreds 上安装回调
+		completeDeferred.add(s.complete);
+		jqXHR.done(s.success);
+		jqXHR.fail(s.error);
 
-		// Get transport
-		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
+		// 获取交通
+		transport = inspectPrefiltersOrTransports(transports, s, options, jqXHR);
 
-		// If no transport, we auto-abort
-		if ( !transport ) {
-			done( -1, "No Transport" );
+		// 如果没有 transport，我们会自动中止
+		if (!transport) {
+			done(-1, "No Transport");
 		} else {
 			jqXHR.readyState = 1;
 
-			// Send global event
-			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
+			// 发送全局事件
+			if (fireGlobals) {
+				globalEventContext.trigger("ajaxSend", [jqXHR, s]);
 			}
 
-			// If request was aborted inside ajaxSend, stop there
-			if ( completed ) {
+			// 如果请求在 ajaxSend 中中止，则在此处停止
+			if (completed) {
 				return jqXHR;
 			}
 
-			// Timeout
-			if ( s.async && s.timeout > 0 ) {
-				timeoutTimer = window.setTimeout( function() {
-					jqXHR.abort( "timeout" );
-				}, s.timeout );
+			// 超时
+			if (s.async && s.timeout > 0) {
+				timeoutTimer = window.setTimeout(function () {
+					jqXHR.abort("timeout");
+				}, s.timeout);
 			}
 
 			try {
 				completed = false;
-				transport.send( requestHeaders, done );
-			} catch ( e ) {
+				transport.send(requestHeaders, done);
+			} catch (e) {
 
-				// Rethrow post-completion exceptions
-				if ( completed ) {
+				// Rethrow post-completion 异常
+				if (completed) {
 					throw e;
 				}
 
-				// Propagate others as results
-				done( -1, e );
+				// 将其他 Propagate others as results
+				done(-1, e);
 			}
 		}
 
-		// Callback for when everything is done
-		function done( status, nativeStatusText, responses, headers ) {
+		// 所有操作完成后的回调
+		function done(status, nativeStatusText, responses, headers) {
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
 
-			// Ignore repeat invocations
-			if ( completed ) {
+			// 忽略重复调用
+			if (completed) {
 				return;
 			}
 
 			completed = true;
 
-			// Clear timeout if it exists
-			if ( timeoutTimer ) {
-				window.clearTimeout( timeoutTimer );
+			// 如果存在，请清除超时
+			if (timeoutTimer) {
+				window.clearTimeout(timeoutTimer);
 			}
 
-			// Dereference transport for early garbage collection
-			// (no matter how long the jqXHR object will be used)
+			// 取消引用传输以进行早期垃圾回收
+			// （无论 jqXHR 对象将使用多长时间）
 			transport = undefined;
 
-			// Cache response headers
+			// 缓存响应标头
 			responseHeadersString = headers || "";
 
 			// Set readyState
 			jqXHR.readyState = status > 0 ? 4 : 0;
 
-			// Determine if successful
+			// 确定是否成功
 			isSuccess = status >= 200 && status < 300 || status === 304;
 
-			// Get response data
-			if ( responses ) {
-				response = ajaxHandleResponses( s, jqXHR, responses );
+			// 获取响应数据
+			if (responses) {
+				response = ajaxHandleResponses(s, jqXHR, responses);
 			}
 
-			// Use a noop converter for missing script but not if jsonp
-			if ( !isSuccess &&
-				jQuery.inArray( "script", s.dataTypes ) > -1 &&
-				jQuery.inArray( "json", s.dataTypes ) < 0 ) {
-				s.converters[ "text script" ] = function() {};
+			// 对缺少的脚本使用 noop 转换器，但如果 jsonp 则不这样做
+			if (!isSuccess &&
+				jQuery.inArray("script", s.dataTypes) > -1 &&
+				jQuery.inArray("json", s.dataTypes) < 0) {
+				s.converters["text script"] = function () { };
 			}
 
-			// Convert no matter what (that way responseXXX fields are always set)
-			response = ajaxConvert( s, response, jqXHR, isSuccess );
+			// 无论如何都要转换（这样 responseXXX 字段总是被设置的）
+			response = ajaxConvert(s, response, jqXHR, isSuccess);
 
-			// If successful, handle type chaining
-			if ( isSuccess ) {
+			// 如果成功，则处理类型链接
+			if (isSuccess) {
 
-				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-				if ( s.ifModified ) {
-					modified = jqXHR.getResponseHeader( "Last-Modified" );
-					if ( modified ) {
-						jQuery.lastModified[ cacheURL ] = modified;
+				// 如果处于 ifModified 模式，请设置 If-Modified-Since 和/或 If-None-Match 标头。
+				if (s.ifModified) {
+					modified = jqXHR.getResponseHeader("Last-Modified");
+					if (modified) {
+						jQuery.lastModified[cacheURL] = modified;
 					}
-					modified = jqXHR.getResponseHeader( "etag" );
-					if ( modified ) {
-						jQuery.etag[ cacheURL ] = modified;
+					modified = jqXHR.getResponseHeader("etag");
+					if (modified) {
+						jQuery.etag[cacheURL] = modified;
 					}
 				}
 
-				// if no content
-				if ( status === 204 || s.type === "HEAD" ) {
+				// 如果没有内容
+				if (status === 204 || s.type === "HEAD") {
 					statusText = "nocontent";
 
-				// if not modified
-				} else if ( status === 304 ) {
+					// 如果未修改
+				} else if (status === 304) {
 					statusText = "notmodified";
 
-				// If we have data, let's convert it
+					// 如果我们有数据，让我们转换它
 				} else {
 					statusText = response.state;
 					success = response.data;
@@ -788,45 +790,45 @@ jQuery.extend( {
 				}
 			} else {
 
-				// Extract error from statusText and normalize for non-aborts
+				// 从 statusText 中提取错误并针对非中止进行规范化
 				error = statusText;
-				if ( status || !statusText ) {
+				if (status || !statusText) {
 					statusText = "error";
-					if ( status < 0 ) {
+					if (status < 0) {
 						status = 0;
 					}
 				}
 			}
 
-			// Set data for the fake xhr object
+			// 为假 xhr 对象设置数据
 			jqXHR.status = status;
-			jqXHR.statusText = ( nativeStatusText || statusText ) + "";
+			jqXHR.statusText = (nativeStatusText || statusText) + "";
 
 			// Success/Error
-			if ( isSuccess ) {
-				deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
+			if (isSuccess) {
+				deferred.resolveWith(callbackContext, [success, statusText, jqXHR]);
 			} else {
-				deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+				deferred.rejectWith(callbackContext, [jqXHR, statusText, error]);
 			}
 
-			// Status-dependent callbacks
-			jqXHR.statusCode( statusCode );
+			// 状态相关回调
+			jqXHR.statusCode(statusCode);
 			statusCode = undefined;
 
-			if ( fireGlobals ) {
-				globalEventContext.trigger( isSuccess ? "ajaxSuccess" : "ajaxError",
-					[ jqXHR, s, isSuccess ? success : error ] );
+			if (fireGlobals) {
+				globalEventContext.trigger(isSuccess ? "ajaxSuccess" : "ajaxError",
+					[jqXHR, s, isSuccess ? success : error]);
 			}
 
-			// Complete
-			completeDeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
+			// 完成
+			completeDeferred.fireWith(callbackContext, [jqXHR, statusText]);
 
-			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
+			if (fireGlobals) {
+				globalEventContext.trigger("ajaxComplete", [jqXHR, s]);
 
-				// Handle the global AJAX counter
-				if ( !( --jQuery.active ) ) {
-					jQuery.event.trigger( "ajaxStop" );
+				// 处理全局 AJAX 计数器
+				if (!(--jQuery.active)) {
+					jQuery.event.trigger("ajaxStop");
 				}
 			}
 		}
@@ -834,44 +836,44 @@ jQuery.extend( {
 		return jqXHR;
 	},
 
-	getJSON: function( url, data, callback ) {
-		return jQuery.get( url, data, callback, "json" );
+	getJSON: function (url, data, callback) {
+		return jQuery.get(url, data, callback, "json");
 	},
 
-	getScript: function( url, callback ) {
-		return jQuery.get( url, undefined, callback, "script" );
+	getScript: function (url, callback) {
+		return jQuery.get(url, undefined, callback, "script");
 	}
-} );
+});
 
-jQuery.each( [ "get", "post" ], function( _i, method ) {
-	jQuery[ method ] = function( url, data, callback, type ) {
+jQuery.each(["get", "post"], function (_i, method) {
+	jQuery[method] = function (url, data, callback, type) {
 
-		// Shift arguments if data argument was omitted.
-		// Handle the null callback placeholder.
-		if ( typeof data === "function" || data === null ) {
+		// 如果省略了 data 参数，则移动参数。
+		// 处理 null 回调占位符。
+		if (typeof data === "function" || data === null) {
 			type = type || callback;
 			callback = data;
 			data = undefined;
 		}
 
-		// The url can be an options object (which then must have .url)
-		return jQuery.ajax( jQuery.extend( {
+		// url 可以是 options 对象（然后必须具有 .url）
+		return jQuery.ajax(jQuery.extend({
 			url: url,
 			type: method,
 			dataType: type,
 			data: data,
 			success: callback
-		}, jQuery.isPlainObject( url ) && url ) );
+		}, jQuery.isPlainObject(url) && url));
 	};
-} );
+});
 
-jQuery.ajaxPrefilter( function( s ) {
+jQuery.ajaxPrefilter(function (s) {
 	var i;
-	for ( i in s.headers ) {
-		if ( i.toLowerCase() === "content-type" ) {
-			s.contentType = s.headers[ i ] || "";
+	for (i in s.headers) {
+		if (i.toLowerCase() === "content-type") {
+			s.contentType = s.headers[i] || "";
 		}
 	}
-} );
+});
 
 export { jQuery, jQuery as $ };

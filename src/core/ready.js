@@ -4,7 +4,7 @@ import { document } from "../var/document.js";
 import "../core/readyException.js";
 import "../deferred.js";
 
-// The deferred used on DOM ready
+// 在 DOM ready 上使用的 deferred
 var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
@@ -12,9 +12,9 @@ jQuery.fn.ready = function( fn ) {
 	readyList
 		.then( fn )
 
-		// Wrap jQuery.readyException in a function so that the lookup
-		// happens at the time of error handling instead of callback
-		// registration.
+		// 将 jQuery.readyException 包装在函数中，以便查找
+// 发生在错误处理时，而不是回调时
+// 注册。
 		.catch( function( error ) {
 			jQuery.readyException( error );
 		} );
@@ -24,55 +24,55 @@ jQuery.fn.ready = function( fn ) {
 
 jQuery.extend( {
 
-	// Is the DOM ready to be used? Set to true once it occurs.
+	// DOM 准备好了吗？一旦发生，就设置为 true。
 	isReady: false,
 
-	// A counter to track how many items to wait for before
-	// the ready event fires. See trac-6781
+	// 一个计数器，用于跟踪之前要等待的项目数
+// 将触发 ready 事件。请参阅 trac-6781
 	readyWait: 1,
 
-	// Handle when the DOM is ready
+	// 当 DOM 准备就绪时进行处理
 	ready: function( wait ) {
 
-		// Abort if there are pending holds or we're already ready
+		// 如果有待处理的保留或我们已经准备好了，则中止
 		if ( wait === true ? --jQuery.readyWait : jQuery.isReady ) {
 			return;
 		}
 
-		// Remember that the DOM is ready
+		// 请记住，DOM 已准备就绪
 		jQuery.isReady = true;
 
-		// If a normal DOM Ready event fired, decrement, and wait if need be
+		// 如果触发了正常的 DOM Ready 事件，则递减并在需要时等待
 		if ( wait !== true && --jQuery.readyWait > 0 ) {
 			return;
 		}
 
-		// If there are functions bound, to execute
+		// 如果有绑定的函数，要执行
 		readyList.resolveWith( document, [ jQuery ] );
 	}
 } );
 
 jQuery.ready.then = readyList.then;
 
-// The ready event handler and self cleanup method
+// ready 事件处理程序和自我清理方法
 function completed() {
 	document.removeEventListener( "DOMContentLoaded", completed );
 	window.removeEventListener( "load", completed );
 	jQuery.ready();
 }
 
-// Catch cases where $(document).ready() is called
-// after the browser event has already occurred.
+// 捕获调用 $（document）.ready（） 的情况
+// 在 browser 事件已发生之后。
 if ( document.readyState !== "loading" ) {
 
-	// Handle it asynchronously to allow scripts the opportunity to delay ready
+	// 异步处理它，让脚本有机会延迟就绪
 	window.setTimeout( jQuery.ready );
 
 } else {
 
-	// Use the handy event callback
+	// 使用方便的事件回调
 	document.addEventListener( "DOMContentLoaded", completed );
 
-	// A fallback to window.onload, that will always work
+	// 回退到 window.onload，将始终有效
 	window.addEventListener( "load", completed );
 }

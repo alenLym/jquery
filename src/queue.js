@@ -4,138 +4,138 @@ import { dataPriv } from "./data/var/dataPriv.js";
 import "./deferred.js";
 import "./callbacks.js";
 
-jQuery.extend( {
-	queue: function( elem, type, data ) {
+jQuery.extend({
+	queue: function (elem, type, data) {
 		var queue;
 
-		if ( elem ) {
-			type = ( type || "fx" ) + "queue";
-			queue = dataPriv.get( elem, type );
+		if (elem) {
+			type = (type || "fx") + "queue";
+			queue = dataPriv.get(elem, type);
 
-			// Speed up dequeue by getting out quickly if this is just a lookup
-			if ( data ) {
-				if ( !queue || Array.isArray( data ) ) {
-					queue = dataPriv.set( elem, type, jQuery.makeArray( data ) );
+			// 如果这只是一个查找，请通过快速退出来加快取消排队的速度
+			if (data) {
+				if (!queue || Array.isArray(data)) {
+					queue = dataPriv.set(elem, type, jQuery.makeArray(data));
 				} else {
-					queue.push( data );
+					queue.push(data);
 				}
 			}
 			return queue || [];
 		}
 	},
 
-	dequeue: function( elem, type ) {
+	dequeue: function (elem, type) {
 		type = type || "fx";
 
-		var queue = jQuery.queue( elem, type ),
+		var queue = jQuery.queue(elem, type),
 			startLength = queue.length,
 			fn = queue.shift(),
-			hooks = jQuery._queueHooks( elem, type ),
-			next = function() {
-				jQuery.dequeue( elem, type );
+			hooks = jQuery._queueHooks(elem, type),
+			next = function () {
+				jQuery.dequeue(elem, type);
 			};
 
-		// If the fx queue is dequeued, always remove the progress sentinel
-		if ( fn === "inprogress" ) {
+		// 如果 fx 队列已出队，则始终删除进度 sentinel
+		if (fn === "inprogress") {
 			fn = queue.shift();
 			startLength--;
 		}
 
-		if ( fn ) {
+		if (fn) {
 
-			// Add a progress sentinel to prevent the fx queue from being
-			// automatically dequeued
-			if ( type === "fx" ) {
-				queue.unshift( "inprogress" );
+			// 添加进度哨兵以防止 fx 队列
+			// 自动取消排队
+			if (type === "fx") {
+				queue.unshift("inprogress");
 			}
 
-			// Clear up the last queue stop function
+			// 清除最后一个队列停止功能
 			delete hooks.stop;
-			fn.call( elem, next, hooks );
+			fn.call(elem, next, hooks);
 		}
 
-		if ( !startLength && hooks ) {
+		if (!startLength && hooks) {
 			hooks.empty.fire();
 		}
 	},
 
-	// Not public - generate a queueHooks object, or return the current one
-	_queueHooks: function( elem, type ) {
+	// 非公共 - 生成 queueHooks 对象，或返回当前对象
+	_queueHooks: function (elem, type) {
 		var key = type + "queueHooks";
-		return dataPriv.get( elem, key ) || dataPriv.set( elem, key, {
-			empty: jQuery.Callbacks( "once memory" ).add( function() {
-				dataPriv.remove( elem, [ type + "queue", key ] );
-			} )
-		} );
+		return dataPriv.get(elem, key) || dataPriv.set(elem, key, {
+			empty: jQuery.Callbacks("once memory").add(function () {
+				dataPriv.remove(elem, [type + "queue", key]);
+			})
+		});
 	}
-} );
+});
 
-jQuery.fn.extend( {
-	queue: function( type, data ) {
+jQuery.fn.extend({
+	queue: function (type, data) {
 		var setter = 2;
 
-		if ( typeof type !== "string" ) {
+		if (typeof type !== "string") {
 			data = type;
 			type = "fx";
 			setter--;
 		}
 
-		if ( arguments.length < setter ) {
-			return jQuery.queue( this[ 0 ], type );
+		if (arguments.length < setter) {
+			return jQuery.queue(this[0], type);
 		}
 
 		return data === undefined ?
 			this :
-			this.each( function() {
-				var queue = jQuery.queue( this, type, data );
+			this.each(function () {
+				var queue = jQuery.queue(this, type, data);
 
-				// Ensure a hooks for this queue
-				jQuery._queueHooks( this, type );
+				// 确保此队列的钩子
+				jQuery._queueHooks(this, type);
 
-				if ( type === "fx" && queue[ 0 ] !== "inprogress" ) {
-					jQuery.dequeue( this, type );
+				if (type === "fx" && queue[0] !== "inprogress") {
+					jQuery.dequeue(this, type);
 				}
-			} );
+			});
 	},
-	dequeue: function( type ) {
-		return this.each( function() {
-			jQuery.dequeue( this, type );
-		} );
+	dequeue: function (type) {
+		return this.each(function () {
+			jQuery.dequeue(this, type);
+		});
 	},
-	clearQueue: function( type ) {
-		return this.queue( type || "fx", [] );
+	clearQueue: function (type) {
+		return this.queue(type || "fx", []);
 	},
 
-	// Get a promise resolved when queues of a certain type
-	// are emptied (fx is the type by default)
-	promise: function( type, obj ) {
+	// 在某种类型的队列时解析 Promise
+	// 被清空（fx 是默认类型）
+	promise: function (type, obj) {
 		var tmp,
 			count = 1,
 			defer = jQuery.Deferred(),
 			elements = this,
 			i = this.length,
-			resolve = function() {
-				if ( !( --count ) ) {
-					defer.resolveWith( elements, [ elements ] );
+			resolve = function () {
+				if (!(--count)) {
+					defer.resolveWith(elements, [elements]);
 				}
 			};
 
-		if ( typeof type !== "string" ) {
+		if (typeof type !== "string") {
 			obj = type;
 			type = undefined;
 		}
 		type = type || "fx";
 
-		while ( i-- ) {
-			tmp = dataPriv.get( elements[ i ], type + "queueHooks" );
-			if ( tmp && tmp.empty ) {
+		while (i--) {
+			tmp = dataPriv.get(elements[i], type + "queueHooks");
+			if (tmp && tmp.empty) {
 				count++;
-				tmp.empty.add( resolve );
+				tmp.empty.add(resolve);
 			}
 		}
 		resolve();
-		return defer.promise( obj );
+		return defer.promise(obj);
 	}
-} );
+});
 
 export { jQuery, jQuery as $ };

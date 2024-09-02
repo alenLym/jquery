@@ -1,20 +1,20 @@
 /*!
- * jQuery JavaScript Library v@VERSION
+ * jQuery JavaScript 库 v@VERSION
  * https://jquery.com/
  *
- * Copyright OpenJS Foundation and other contributors
- * Released under the MIT license
+ * 版权所有 OpenJS 基金会和其他贡献者
+ * 在 MIT 许可证下发布
  * https://jquery.org/license
  *
- * Date: @DATE
+ * 日期：@DATE
  */
-// Expose a factory as `jQueryFactory`. Aimed at environments without
-// a real `window` where an emulated window needs to be constructed. Example:
+// 将工厂公开为 'jQueryFactory'。针对没有
+// 一个真正的 'window' 需要构建一个模拟的窗口。例：
 //
-//     import { jQueryFactory } from "jquery/factory";
-//     const jQuery = jQueryFactory( window );
+//     import { jQueryFactory } from “jquery/factory”;
+//     const jQuery = jQueryFactory（ window ）;
 //
-// See ticket trac-14549 for more info.
+// 有关更多信息，请参见 ticket trac-14549。
 function jQueryFactoryWrapper( window, noGlobal ) {
 
 if ( !window.document ) {

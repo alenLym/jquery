@@ -1,12 +1,12 @@
-// Matches dashed string for camelizing
+// 匹配虚线字符串以进行驼峰化
 var rdashAlpha = /-([a-z])/g;
 
-// Used by camelCase as callback to replace()
+// 被 camelCase 用作 replace（） 的回调
 function fcamelCase( _all, letter ) {
 	return letter.toUpperCase();
 }
 
-// Convert dashed to camelCase
+// 将虚线转换为 camelCase
 export function camelCase( string ) {
 	return string.replace( rdashAlpha, fcamelCase );
 }

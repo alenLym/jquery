@@ -7,7 +7,7 @@ import "../ajax.js";
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
 
-// Default jsonp settings
+// 默认 jsonp 设置
 jQuery.ajaxSetup( {
 	jsonp: "callback",
 	jsonpCallback: function() {
@@ -17,7 +17,7 @@ jQuery.ajaxSetup( {
 	}
 } );
 
-// Detect, normalize options and install callbacks for jsonp requests
+// 检测、规范化选项并安装 jsonp 请求的回调
 jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 
 	var callbackName, overwritten, responseContainer,
@@ -29,19 +29,19 @@ jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 				rjsonp.test( s.data ) && "data"
 		);
 
-	// Get callback name, remembering preexisting value associated with it
+	// 获取回调名称，记住与之关联的预先存在的值
 	callbackName = s.jsonpCallback = typeof s.jsonpCallback === "function" ?
 		s.jsonpCallback() :
 		s.jsonpCallback;
 
-	// Insert callback into url or form data
+	// 将回调插入 url 或表单数据
 	if ( jsonProp ) {
 		s[ jsonProp ] = s[ jsonProp ].replace( rjsonp, "$1" + callbackName );
 	} else if ( s.jsonp !== false ) {
 		s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
 	}
 
-	// Use data converter to retrieve json after script execution
+	// 在脚本执行后使用数据转换器检索 json
 	s.converters[ "script json" ] = function() {
 		if ( !responseContainer ) {
 			jQuery.error( callbackName + " was not called" );
@@ -49,38 +49,38 @@ jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 		return responseContainer[ 0 ];
 	};
 
-	// Force json dataType
+	// 强制 json 数据类型
 	s.dataTypes[ 0 ] = "json";
 
-	// Install callback
+	// 安装回调
 	overwritten = window[ callbackName ];
 	window[ callbackName ] = function() {
 		responseContainer = arguments;
 	};
 
-	// Clean-up function (fires after converters)
+	// 清理功能（转换器后触发）
 	jqXHR.always( function() {
 
-		// If previous value didn't exist - remove it
+		// 如果上一个值不存在 - 请将其删除
 		if ( overwritten === undefined ) {
 			jQuery( window ).removeProp( callbackName );
 
-		// Otherwise restore preexisting value
+		// 否则恢复预先存在的值
 		} else {
 			window[ callbackName ] = overwritten;
 		}
 
-		// Save back as free
+		// 免费另存
 		if ( s[ callbackName ] ) {
 
-			// Make sure that re-using the options doesn't screw things around
+			// 确保重复使用这些选项不会把事情搞砸
 			s.jsonpCallback = originalSettings.jsonpCallback;
 
-			// Save the callback name for future use
+			// 保存回调名称以备将来使用
 			oldCallbacks.push( callbackName );
 		}
 
-		// Call if it was a function and we have a response
+		// 如果它是一个函数，则调用 Call 并且我们有响应
 		if ( responseContainer && typeof overwritten === "function" ) {
 			overwritten( responseContainer[ 0 ] );
 		}
@@ -88,6 +88,6 @@ jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 		responseContainer = overwritten = undefined;
 	} );
 
-	// Delegate to script
+	// 委托给脚本
 	return "script";
 } );

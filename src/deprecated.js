@@ -21,7 +21,7 @@ jQuery.proxy = function( fn, context ) {
 		return undefined;
 	}
 
-	// Simulated bind
+	// 模拟绑定
 	args = slice.call( arguments, 2 );
 	proxy = function() {
 		return fn.apply( context || this, args.concat( slice.call( arguments ) ) );

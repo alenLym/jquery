@@ -21,18 +21,18 @@ jQuery.extend( {
 		var ret, hooks,
 			nType = elem.nodeType;
 
-		// Don't get/set attributes on text, comment and attribute nodes
+		// 不要在文本、注释和属性节点上获取/设置属性
 		if ( nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
 
-		// Fallback to prop when attributes are not supported
+		// 当不支持 attribute 时回退到 prop
 		if ( typeof elem.getAttribute === "undefined" ) {
 			return jQuery.prop( elem, name, value );
 		}
 
-		// Attribute hooks are determined by the lowercase version
-		// Grab necessary hook if one is defined
+		// 属性钩子由小写版本决定
+// 抓住必要的钩子（如果已定义）
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			hooks = jQuery.attrHooks[ name.toLowerCase() ];
 		}
@@ -40,10 +40,10 @@ jQuery.extend( {
 		if ( value !== undefined ) {
 			if ( value === null ||
 
-				// For compat with previous handling of boolean attributes,
-				// remove when `false` passed. For ARIA attributes -
-				// many of which recognize a `"false"` value - continue to
-				// set the `"false"` value as jQuery <4 did.
+				// 为了兼容先前对 boolean 属性的处理，
+// 当 'false' 通过时删除。对于 ARIA 属性 -
+// 其中许多识别 '“false”' 值 - 继续
+// 像 jQuery <4 一样设置 '“false”' 值。
 				( value === false && name.toLowerCase().indexOf( "aria-" ) !== 0 ) ) {
 
 				jQuery.removeAttr( elem, name );
@@ -65,7 +65,7 @@ jQuery.extend( {
 
 		ret = elem.getAttribute( name );
 
-		// Non-existent attributes return null, we normalize to undefined
+		// 不存在的属性返回 null，我们规范化为 undefined
 		return ret == null ? undefined : ret;
 	},
 
@@ -75,8 +75,8 @@ jQuery.extend( {
 		var name,
 			i = 0,
 
-			// Attribute names can contain non-HTML whitespace characters
-			// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
+			// 属性名称可以包含非 HTML 空白字符
+// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
 			attrNames = value && value.match( rnothtmlwhite );
 
 		if ( attrNames && elem.nodeType === 1 ) {
@@ -87,8 +87,8 @@ jQuery.extend( {
 	}
 } );
 
-// Support: IE <=11+
-// An input loses its value after becoming a radio
+// 支持：IE <=11+
+// input 在成为 radio 后失去其值
 if ( isIE ) {
 	jQuery.attrHooks.type = {
 		set: function( elem, value ) {

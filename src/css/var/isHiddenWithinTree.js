@@ -1,19 +1,19 @@
 import { jQuery } from "../../core.js";
 
-// isHiddenWithinTree reports if an element has a non-"none" display style (inline and/or
-// through the CSS cascade), which is useful in deciding whether or not to make it visible.
-// It differs from the :hidden selector (jQuery.expr.pseudos.hidden) in two important ways:
-// * A hidden ancestor does not force an element to be classified as hidden.
-// * Being disconnected from the document does not force an element to be classified as hidden.
-// These differences improve the behavior of .toggle() et al. when applied to elements that are
-// detached or contained within hidden ancestors (gh-2404, gh-2863).
+// isHiddenWithinTree 报告元素是否具有非 “none” 显示样式（内联和/或
+// 通过 CSS 级联），这对于决定是否使其可见非常有用。
+// 它与 ：hidden 选择器 （jQuery.expr.pseudos.hidden） 有两个重要区别：
+// * 隐藏的上级不会强制将元素分类为隐藏元素。
+// * 与文档断开连接不会强制将元素分类为隐藏元素。
+// 这些差异改进了 .toggle（） 等人在应用于
+// 分离或包含在隐藏的祖先 （GH-2404、GH-2863） 中。
 export function isHiddenWithinTree( elem, el ) {
 
-	// isHiddenWithinTree might be called from jQuery#filter function;
-	// in that case, element will be second argument
+	// isHiddenWithinTree 可以从 jQuery#filter 函数中调用;
+// 在这种情况下，element 将是第二个参数
 	elem = el || elem;
 
-	// Inline style trumps all
+	// 内联样式胜过一切
 	return elem.style.display === "none" ||
 		elem.style.display === "" &&
 		jQuery.css( elem, "display" ) === "none";

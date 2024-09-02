@@ -1,14 +1,14 @@
 import { jQuery } from "../core.js";
 
-// Cross-browser xml parsing
+// 跨浏览器 xml 解析
 jQuery.parseXML = function( data ) {
 	var xml, parserErrorElem;
 	if ( !data || typeof data !== "string" ) {
 		return null;
 	}
 
-	// Support: IE 9 - 11+
-	// IE throws on parseFromString with invalid input.
+	// 支持：IE 9 - 11+
+// IE 使用无效输入在 parseFromString 上引发。
 	try {
 		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
 	} catch ( e ) {}
