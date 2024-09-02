@@ -19,11 +19,11 @@ import "./event.js";
 
 var
 
-	// Support: IE <=10 - 11+
-	// In IE using regex groups here causes severe slowdowns.
+	// 支持： IE <=10 - 11+
+// 在 IE 中，在此处使用正则表达式组会导致严重的速度变慢。
 	rnoInnerhtml = /<script|<style|<link/i;
 
-// Prefer a tbody over its parent table for containing new rows
+// 在包含新行时，首选 tbody 而不是其父表
 function manipulationTarget( elem, content ) {
 	if ( nodeName( elem, "table" ) &&
 		nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {

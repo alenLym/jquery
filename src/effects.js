@@ -34,7 +34,7 @@ function schedule() {
 	}
 }
 
-// Animations created synchronously will run synchronously
+// 同步创建的动画将同步运行
 function createFxNow() {
 	window.setTimeout( function() {
 		fxNow = undefined;

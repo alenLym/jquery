@@ -17,13 +17,20 @@ var version = "@VERSION",
 
 	rhtmlSuffix = /HTML$/i,
 
-	// Define a local copy of jQuery
+// ---------------------------------------- factory  -------------------------------------
+
+
+	// 定义 jQuery 的本地副本
 	jQuery = function( selector, context ) {
 
-		// The jQuery object is actually just the init constructor 'enhanced'
-		// Need init if jQuery is called (just allow error to be thrown if not included)
+		// jQuery 对象实际上只是 init 构造函数 'enhanced'
+// 如果调用 jQuery，则需要 init（如果未包含 jQuery，则允许抛出错误）
 		return new jQuery.fn.init( selector, context );
 	};
+
+
+
+// ----------------------------------------prototype -------------------------------------
 
 jQuery.fn = jQuery.prototype = {
 
@@ -111,6 +118,10 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || this.constructor();
 	}
 };
+
+
+
+// ----------------------------------------extend  -------------------------------------
 
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,

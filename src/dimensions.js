@@ -4,7 +4,7 @@ import { isWindow } from "./var/isWindow.js";
 
 import "./css.js";
 
-// Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
+// 创建 innerHeight、innerWidth、height、width、outerHeight 和 outerWidth 方法
 jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	jQuery.each( {
 		padding: "inner" + name,
