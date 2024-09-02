@@ -22,26 +22,26 @@ var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
  * @param {string} data - 要解析的数据。
  * @returns {boolean|number|string|object} 根据其类型解析的数据。
  */
-function getData( data ) {
-	if ( data === "true" ) {
+function getData(data) {
+	if (data === "true") {
 		return true;
 	}
 
-	if ( data === "false" ) {
+	if (data === "false") {
 		return false;
 	}
 
-	if ( data === "null" ) {
+	if (data === "null") {
 		return null;
 	}
 
 	// 仅当不更改字符串时才转换为数字
-	if ( data === +data + "" ) {
+	if (data === +data + "") {
 		return +data;
 	}
 
-	if ( rbrace.test( data ) ) {
-		return JSON.parse( data );
+	if (rbrace.test(data)) {
+		return JSON.parse(data);
 	}
 
 	return data;
@@ -56,22 +56,22 @@ function getData( data ) {
  * @param {any} data - 要为 data 属性设置的数据。
  * @returns data 属性的值。
  */
-function dataAttr( elem, key, data ) {
+function dataAttr(elem, key, data) {
 	var name;
 
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
-	if ( data === undefined && elem.nodeType === 1 ) {
-		name = "data-" + key.replace( rmultiDash, "-$&" ).toLowerCase();
-		data = elem.getAttribute( name );
+	if (data === undefined && elem.nodeType === 1) {
+		name = "data-" + key.replace(rmultiDash, "-$&").toLowerCase();
+		data = elem.getAttribute(name);
 
-		if ( typeof data === "string" ) {
+		if (typeof data === "string") {
 			try {
-				data = getData( data );
-			} catch ( e ) {}
+				data = getData(data);
+			} catch (e) { }
 
 			// 确保我们设置了数据，以便以后不会更改它
-			dataUser.set( elem, key, data );
+			dataUser.set(elem, key, data);
 		} else {
 			data = undefined;
 		}
@@ -79,56 +79,56 @@ function dataAttr( elem, key, data ) {
 	return data;
 }
 
-jQuery.extend( {
-	hasData: function( elem ) {
-		return dataUser.hasData( elem ) || dataPriv.hasData( elem );
+jQuery.extend({
+	hasData: function (elem) {
+		return dataUser.hasData(elem) || dataPriv.hasData(elem);
 	},
 
-	data: function( elem, name, data ) {
-		return dataUser.access( elem, name, data );
+	data: function (elem, name, data) {
+		return dataUser.access(elem, name, data);
 	},
 
-	removeData: function( elem, name ) {
-		dataUser.remove( elem, name );
+	removeData: function (elem, name) {
+		dataUser.remove(elem, name);
 	},
 
 	// TODO：现在，对 _data 和 _removeData 的所有调用都已替换
-// 通过直接调用 dataPriv 方法，这些方法可以被弃用。
-	_data: function( elem, name, data ) {
-		return dataPriv.access( elem, name, data );
+	// 通过直接调用 dataPriv 方法，这些方法可以被弃用。
+	_data: function (elem, name, data) {
+		return dataPriv.access(elem, name, data);
 	},
 
-	_removeData: function( elem, name ) {
-		dataPriv.remove( elem, name );
+	_removeData: function (elem, name) {
+		dataPriv.remove(elem, name);
 	}
-} );
+});
 
-jQuery.fn.extend( {
-	data: function( key, value ) {
+jQuery.fn.extend({
+	data: function (key, value) {
 		var i, name, data,
-			elem = this[ 0 ],
+			elem = this[0],
 			attrs = elem && elem.attributes;
 
 		// 获取所有值
-		if ( key === undefined ) {
-			if ( this.length ) {
-				data = dataUser.get( elem );
+		if (key === undefined) {
+			if (this.length) {
+				data = dataUser.get(elem);
 
-				if ( elem.nodeType === 1 && !dataPriv.get( elem, "hasDataAttrs" ) ) {
+				if (elem.nodeType === 1 && !dataPriv.get(elem, "hasDataAttrs")) {
 					i = attrs.length;
-					while ( i-- ) {
+					while (i--) {
 
 						// 支持：IE 11+
-// attrs 元素可以为 null （trac-14894）
-						if ( attrs[ i ] ) {
-							name = attrs[ i ].name;
-							if ( name.indexOf( "data-" ) === 0 ) {
-								name = camelCase( name.slice( 5 ) );
-								dataAttr( elem, name, data[ name ] );
+						// attrs 元素可以为 null （trac-14894）
+						if (attrs[i]) {
+							name = attrs[i].name;
+							if (name.indexOf("data-") === 0) {
+								name = camelCase(name.slice(5));
+								dataAttr(elem, name, data[name]);
 							}
 						}
 					}
-					dataPriv.set( elem, "hasDataAttrs", true );
+					dataPriv.set(elem, "hasDataAttrs", true);
 				}
 			}
 
@@ -136,33 +136,33 @@ jQuery.fn.extend( {
 		}
 
 		// 设置多个值
-		if ( typeof key === "object" ) {
-			return this.each( function() {
-				dataUser.set( this, key );
-			} );
+		if (typeof key === "object") {
+			return this.each(function () {
+				dataUser.set(this, key);
+			});
 		}
 
-		return access( this, function( value ) {
+		return access(this, function (value) {
 			var data;
 
 			// 调用 jQuery 对象（元素匹配）不为空
-// （因此有一个元素出现在 this[ 0 ] 处），并且
-// 'value' 参数未定义。空 jQuery 对象
-// 将导致 elem = this[ 0 ] 的 'undefined' ，这将
-// 如果尝试读取数据缓存，则引发异常。
-			if ( elem && value === undefined ) {
+			// （因此有一个元素出现在 this[ 0 ] 处），并且
+			// 'value' 参数未定义。空 jQuery 对象
+			// 将导致 elem = this[ 0 ] 的 'undefined' ，这将
+			// 如果尝试读取数据缓存，则引发异常。
+			if (elem && value === undefined) {
 
 				// 尝试从缓存中获取数据
-// 键将始终在 Data 中为 camelCased
-				data = dataUser.get( elem, key );
-				if ( data !== undefined ) {
+				// 键将始终在 Data 中为 camelCased
+				data = dataUser.get(elem, key);
+				if (data !== undefined) {
 					return data;
 				}
 
 				// 尝试 “发现” 中的数据
-// HTML5 自定义 data-* attrs
-				data = dataAttr( elem, key );
-				if ( data !== undefined ) {
+				// HTML5 自定义 data-* attrs
+				data = dataAttr(elem, key);
+				if (data !== undefined) {
 					return data;
 				}
 
@@ -171,19 +171,19 @@ jQuery.fn.extend( {
 			}
 
 			// 设置数据...
-			this.each( function() {
+			this.each(function () {
 
 				// 我们始终存储 camelCased 密钥
-				dataUser.set( this, key, value );
-			} );
-		}, null, value, arguments.length > 1, null, true );
+				dataUser.set(this, key, value);
+			});
+		}, null, value, arguments.length > 1, null, true);
 	},
 
-	removeData: function( key ) {
-		return this.each( function() {
-			dataUser.remove( this, key );
-		} );
+	removeData: function (key) {
+		return this.each(function () {
+			dataUser.remove(this, key);
+		});
 	}
-} );
+});
 
 export { jQuery, jQuery as $ };

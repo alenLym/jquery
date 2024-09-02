@@ -2,22 +2,22 @@ import { isIE } from "../var/isIE.js";
 import { whitespace } from "../var/whitespace.js";
 import { support } from "./support.js";
 
-// Build QSA regex.
-// Regex strategy adopted from Diego Perini.
+// 构建 QSA 正则表达式。
+// 采用 Diego Perini 的正则表达式策略。
 export var rbuggyQSA = [];
 
 if ( isIE ) {
 	rbuggyQSA.push(
 
-		// Support: IE 9 - 11+
-		// IE's :disabled selector does not pick up the children of disabled fieldsets
+		// 支持：IE 9 - 11+
+// IE 的 :d isabled 选择器不选取已禁用字段集的子项
 		":enabled",
 		":disabled",
 
-		// Support: IE 11+
-		// IE 11 doesn't find elements on a `[name='']` query in some cases.
-		// Adding a temporary attribute to the document before the selection works
-		// around the issue.
+		// 支持：IE 11+
+// 在某些情况下，IE 11 在 '[name='']' 查询中找不到元素。
+// 在选择工作之前向文档添加临时属性
+// 围绕问题。
 		"\\[" + whitespace + "*name" + whitespace + "*=" +
 			whitespace + "*(?:''|\"\")"
 	);
@@ -25,12 +25,12 @@ if ( isIE ) {
 
 if ( !support.cssHas ) {
 
-	// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
-	// Our regular `try-catch` mechanism fails to detect natively-unsupported
-	// pseudo-classes inside `:has()` (such as `:has(:contains("Foo"))`)
-	// in browsers that parse the `:has()` argument as a forgiving selector list.
-	// https://drafts.csswg.org/selectors/#relational now requires the argument
-	// to be parsed unforgivingly, but browsers have not yet fully adjusted.
+	// 支持： Chrome 105 - 110+， Safari 15.4 - 16.3+
+// 我们常规的 'try-catch' 机制无法检测到原生不支持的
+// '：has（）' 中的伪类 （例如 '：has（：contains（“Foo”））'）
+// 在将 '：has（）' 参数解析为宽容的选择器列表的浏览器中。
+// https://drafts.csswg.org/selectors/#relational 现在需要 argument
+// 被无情地解析，但浏览器尚未完全调整。
 	rbuggyQSA.push( ":has" );
 }
 

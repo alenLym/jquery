@@ -23,11 +23,11 @@ export function tokenize( selector, parseOnly ) {
 
 	while ( soFar ) {
 
-		// Comma and first run
+		// 逗号和首次运行
 		if ( !matched || ( match = rcomma.exec( soFar ) ) ) {
 			if ( match ) {
 
-				// Don't consume trailing commas as valid
+				// 不要将尾随逗号用作有效
 				soFar = soFar.slice( match[ 0 ].length ) || soFar;
 			}
 			groups.push( ( tokens = [] ) );
@@ -35,19 +35,19 @@ export function tokenize( selector, parseOnly ) {
 
 		matched = false;
 
-		// Combinators
+		// 运算器
 		if ( ( match = rleadingCombinator.exec( soFar ) ) ) {
 			matched = match.shift();
 			tokens.push( {
 				value: matched,
 
-				// Cast descendant combinators to space
+				// 将后代运算器强制转换为空间
 				type: match[ 0 ].replace( rtrimCSS, " " )
 			} );
 			soFar = soFar.slice( matched.length );
 		}
 
-		// Filters
+		// 过滤 器
 		for ( type in filterMatchExpr ) {
 			if ( ( match = jQuery.expr.match[ type ].exec( soFar ) ) && ( !preFilters[ type ] ||
 				( match = preFilters[ type ]( match ) ) ) ) {
@@ -66,9 +66,9 @@ export function tokenize( selector, parseOnly ) {
 		}
 	}
 
-	// Return the length of the invalid excess
-	// if we're just parsing
-	// Otherwise, throw an error or return tokens
+	// 返回无效超出的长度
+// 如果我们只是解析
+// 否则，抛出错误或返回令牌
 	if ( parseOnly ) {
 		return soFar.length;
 	}

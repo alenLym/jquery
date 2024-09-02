@@ -9,14 +9,14 @@ var runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace +
 
 		if ( nonHex ) {
 
-			// Strip the backslash prefix from a non-hex escape sequence
+			// 从非十六进制转义序列中去除反斜杠前缀
 			return nonHex;
 		}
 
-		// Replace a hexadecimal escape sequence with the encoded Unicode code point
-		// Support: IE <=11+
-		// For values outside the Basic Multilingual Plane (BMP), manually construct a
-		// surrogate pair
+		// 将十六进制转义序列替换为编码的 Unicode 码位
+// 支持：IE <=11+
+// 对于基本多语言平面 （BMP） 之外的值，请手动构造
+// 代理对
 		return high < 0 ?
 			String.fromCharCode( high + 0x10000 ) :
 			String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );

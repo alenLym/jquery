@@ -124,11 +124,20 @@ jQuery.fn = jQuery.prototype = {
 // ----------------------------------------extend  -------------------------------------
 
 jQuery.extend = jQuery.fn.extend = function () {
-	var options, name, src, copy, copyIsArray, clone,
-		target = arguments[0] || {},
-		i = 1,
-		length = arguments.length,
-		deep = false;
+
+
+	var options, // 目标对象
+		name, // 属性名
+		src, // 属性值
+		copy, // 拷贝对象
+		copyIsArray, // 拷贝对象是否为数组
+		clone, // 拷贝对象
+		target = arguments[0] || {},  // 目标对象
+		i = 1,  // 当前属性索引
+		length = arguments.length, // 参数长度
+		deep = false;  // 是否深拷贝
+
+
 
 	// 处理深拷贝情况
 	if (typeof target === "boolean") {

@@ -6,49 +6,49 @@ import { slice } from "../var/slice.js";
 
 var hasDuplicate;
 
-// Document order sorting
+// 文档顺序排序
 function sortOrder( a, b ) {
 
-	// Flag for duplicate removal
+	// 重复删除的标记
 	if ( a === b ) {
 		hasDuplicate = true;
 		return 0;
 	}
 
-	// Sort on method existence if only one input has compareDocumentPosition
+	// 如果只有一个输入具有 compareDocumentPosition，则根据方法存在进行排序
 	var compare = !a.compareDocumentPosition - !b.compareDocumentPosition;
 	if ( compare ) {
 		return compare;
 	}
 
-	// Calculate position if both inputs belong to the same document
-	// Support: IE 11+
-	// IE sometimes throws a "Permission denied" error when strict-comparing
-	// two documents; shallow comparisons work.
-	// eslint-disable-next-line eqeqeq
+	// 如果两个输入属于同一文档，则计算位置
+// 支持：IE 11+
+// IE 在进行严格比较时有时会引发 “Permission denied” 错误
+// 两份文件;肤浅的比较是有效的。
+// eslint-disable-next-line eqeq
 	compare = ( a.ownerDocument || a ) == ( b.ownerDocument || b ) ?
 		a.compareDocumentPosition( b ) :
 
-		// Otherwise we know they are disconnected
+		// 否则，我们知道它们已断开连接
 		1;
 
-	// Disconnected nodes
+	// 断开连接的节点
 	if ( compare & 1 ) {
 
-		// Choose the first element that is related to the document
-		// Support: IE 11+
-		// IE sometimes throws a "Permission denied" error when strict-comparing
-		// two documents; shallow comparisons work.
-		// eslint-disable-next-line eqeqeq
+		// 选择与文档相关的第一个元素
+// 支持：IE 11+
+// IE 在进行严格比较时有时会引发 “Permission denied” 错误
+// 两份文件;肤浅的比较是有效的。
+// eslint-disable-next-line eqeq
 		if ( a == document || a.ownerDocument == document &&
 			jQuery.contains( document, a ) ) {
 			return -1;
 		}
 
-		// Support: IE 11+
-		// IE sometimes throws a "Permission denied" error when strict-comparing
-		// two documents; shallow comparisons work.
-		// eslint-disable-next-line eqeqeq
+		// 支持：IE 11+
+// IE 在进行严格比较时有时会引发 “Permission denied” 错误
+// 两份文件;肤浅的比较是有效的。
+// eslint-disable-next-line eqeq
 		if ( b == document || b.ownerDocument == document &&
 			jQuery.contains( document, b ) ) {
 			return 1;
@@ -62,8 +62,8 @@ function sortOrder( a, b ) {
 }
 
 /**
- * Document sorting and removing duplicates
- * @param {ArrayLike} results
+ * 文档排序和删除重复项
+ * @param {ArrayLike} 结果
  */
 jQuery.uniqueSort = function( results ) {
 	var elem,

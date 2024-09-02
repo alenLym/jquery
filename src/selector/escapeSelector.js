@@ -1,22 +1,22 @@
 import { jQuery } from "../core.js";
 
-// CSS string/identifier serialization
+// CSS 字符串/标识符序列化
 // https://drafts.csswg.org/cssom/#common-serializing-idioms
 var rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;
 
 function fcssescape( ch, asCodePoint ) {
 	if ( asCodePoint ) {
 
-		// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
+		// U+0000 NULL 变为 U+FFFD 替换字符
 		if ( ch === "\0" ) {
 			return "\uFFFD";
 		}
 
-		// Control characters and (dependent upon position) numbers get escaped as code points
+		// 控制字符和（取决于位置）数字作为代码点进行转义
 		return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
 	}
 
-	// Other potentially-special ASCII characters get backslash-escaped
+	// 其他可能特殊的 ASCII 字符采用反斜杠转义
 	return "\\" + ch;
 }
 

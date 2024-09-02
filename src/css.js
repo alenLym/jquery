@@ -216,7 +216,7 @@ function getWidthOrHeight(elem, dimension, extra) {
 jQuery.extend({
 
 	// 添加 style 属性钩子以覆盖默认值
-// 获取和设置 Style 属性的行为
+	// 获取和设置 Style 属性的行为
 	cssHooks: {},
 
 	// 获取并设置 DOM 节点上的 style 属性
@@ -242,8 +242,8 @@ jQuery.extend({
 			style = elem.style;
 
 		// 确保我们使用正确的名称。我们没有
-// 想要查询值是否为 CSS 自定义属性
-// 因为它们是用户定义的。
+		// 想要查询值是否为 CSS 自定义属性
+		// 因为它们是用户定义的。
 		if (!isCustomProp) {
 			name = finalPropName(origName);
 		}
@@ -274,7 +274,7 @@ jQuery.extend({
 			}
 
 			// 支持：IE <=9 - 11+
-// 克隆元素的 background-* props 会影响源元素 （trac-8908）
+			// 克隆元素的 background-* props 会影响源元素 （trac-8908）
 			if (isIE && value === "" && name.indexOf("background") === 0) {
 				style[name] = "inherit";
 			}
@@ -318,8 +318,8 @@ jQuery.extend({
 			isCustomProp = rcustomProp.test(name);
 
 		// 确保我们使用正确的名称。我们没有
-// 如果值是 CSS 自定义属性，则想要修改该值
-// 因为它们是用户定义的。
+		// 如果值是 CSS 自定义属性，则想要修改该值
+		// 因为它们是用户定义的。
 		if (!isCustomProp) {
 			name = finalPropName(origName);
 		}
@@ -364,15 +364,15 @@ jQuery.each(["height", "width"], function (_i, dimension) {
 			if (computed) {
 
 				// 如果我们无形地显示某些元素，它们可以具有维度信息
-// 但它必须具有有益的当前显示样式
+				// 但它必须具有有益的当前显示样式
 				return rdisplayswap.test(jQuery.css(elem, "display")) &&
 
 					// 支持：Safari <=8 - 12+，Chrome <=73+
-// WebKit/Blink中的表格列具有非零offsetWidth和零
-// getBoundingClientRect（）.width 的 intent 的 x 的 x
-// 支持：IE <=11+
-// 在断开连接的节点上运行 getBoundingClientRect
-// 在 IE 中引发错误。
+					// WebKit/Blink中的表格列具有非零offsetWidth和零
+					// getBoundingClientRect（）.width 的 intent 的 x 的 x
+					// 支持：IE <=11+
+					// 在断开连接的节点上运行 getBoundingClientRect
+					// 在 IE 中引发错误。
 					(!elem.getClientRects().length || !elem.getBoundingClientRect().width) ?
 					swap(elem, cssShow, function () {
 						return getWidthOrHeight(elem, dimension, extra);

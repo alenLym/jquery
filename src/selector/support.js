@@ -1,15 +1,15 @@
 import { document } from "../var/document.js";
 import { support } from "../var/support.js";
 
-// Support: Chrome 105 - 111 only, Safari 15.4 - 16.3 only
-// Make sure the `:has()` argument is parsed unforgivingly.
-// We include `*` in the test to detect buggy implementations that are
-// _selectively_ forgiving (specifically when the list includes at least
-// one valid selector).
-// Note that we treat complete lack of support for `:has()` as if it were
-// spec-compliant support, which is fine because use of `:has()` in such
-// environments will fail in the qSA path and fall back to jQuery traversal
-// anyway.
+// 支持：仅限 Chrome 105 - 111，仅限 Safari 15.4 - 16.3
+// 确保 '：has（）' 参数被无情地解析。
+// 我们在测试中包含 '*' 以检测
+// _selectively_ 宽恕（特别是当列表至少包括
+// 一个有效的选择器）。
+// 注意，我们把完全不支持 '：has（）' 看作是
+// 符合规范的支持，这很好，因为在这样的
+// 环境将在 qSA 路径中失败并回退到 jQuery 遍历
+// 无论如何。
 try {
 	document.querySelector( ":has(*,:jqfake)" );
 	support.cssHas = false;
